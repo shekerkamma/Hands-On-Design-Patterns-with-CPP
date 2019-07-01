@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.12)
+project(Chapter10)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(malloc1 malloc1.cpp)
+add_executable(malloc2 malloc2.cpp)
+add_executable(malloc3 malloc3.cpp)
+add_executable(smartptr smartptr.cpp)
+add_executable(string1 string1.cpp)
+add_executable(string2 string2.cpp)
+add_executable(vector1 vector1.cpp)
+add_executable(vector2 vector2.cpp)

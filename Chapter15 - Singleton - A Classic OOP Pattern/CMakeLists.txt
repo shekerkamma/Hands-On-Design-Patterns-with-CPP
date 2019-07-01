@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.12)
+project(Chapter15)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(singleton_eager singleton_eager.cpp)
+add_executable(singleton_lazy_leaky singleton_lazy_leaky.cpp)
+add_executable(singleton_meyers singleton_meyers.cpp)
+add_executable(singleton_meyers_pimpl1 singleton_meyers_pimpl1.cpp)
+add_executable(singleton_meyers_pimpl singleton_meyers_pimpl.cpp)
+add_executable(singleton_noaccess singleton_noaccess.cpp)
+add_executable(singleton_static1 singleton_static1.cpp)
+add_executable(singleton_static singleton_static.cpp)

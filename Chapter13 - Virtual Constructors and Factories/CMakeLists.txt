@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.12)
+project(Chapter13)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ctor_dtor_dynamic_type ctor_dtor_dynamic_type.cpp)
+add_executable(ctor_dtor_static_type ctor_dtor_static_type.cpp)
+add_executable(ctor_dtor_virtual_type ctor_dtor_virtual_type.cpp)
+add_executable(poly_copy poly_copy.cpp)
+add_executable(poly_copy_unique poly_copy_unique.cpp)
+add_executable(poly_copy_unique_crtp1 poly_copy_unique_crtp1.cpp)
+add_executable(poly_copy_unique_crtp2 poly_copy_unique_crtp2.cpp)
+add_executable(poly_copy_unique_crtp poly_copy_unique_crtp.cpp)
+add_executable(type_registry type_registry.cpp)
+add_executable(type_registry_unique type_registry_unique.cpp)
+add_executable(unit_factory unit_factory.cpp)
