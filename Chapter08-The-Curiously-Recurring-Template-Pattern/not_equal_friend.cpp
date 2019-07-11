@@ -1,9 +1,11 @@
 #include <iostream>
 
+// -----------------------------------------------------------------------------
 template <typename D> struct not_equal {
     friend bool operator!=(const D& lhs, const D& rhs) { return !(lhs == rhs); }
 };
 
+// -----------------------------------------------------------------------------
 class C : public not_equal<C> {
     int i_;
     public:
@@ -11,7 +13,7 @@ class C : public not_equal<C> {
     friend bool operator==(const C& lhs, const C& rhs) { return lhs.i_ == rhs.i_; }
 };
 
-
+// ---------------
 class D : public not_equal<D> {
     int i_;
     public:
@@ -19,6 +21,7 @@ class D : public not_equal<D> {
     bool operator==(const D& rhs) const { return i_ == rhs.i_; }
 };
 
+// -----------------------------------------------------------------------------
 int main() {
     C c1(1);
     C c2(1);

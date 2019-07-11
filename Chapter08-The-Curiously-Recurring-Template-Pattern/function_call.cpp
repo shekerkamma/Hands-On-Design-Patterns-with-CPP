@@ -9,6 +9,7 @@
 #define REPEAT32(x) REPEAT16(x) REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
+// -----------------------------------------------------------------------------
 namespace no_polymorphism {
 class A {
     public:
@@ -20,6 +21,7 @@ class A {
 };
 } // namespace no_polymorphism
 
+// -----------------------------------------------------------------------------
 namespace dynamic_polymorphism {
 class B {
     public:
@@ -36,6 +38,7 @@ class D : public B {
 };
 } // namespace dynamic_polymorphism
 
+// -----------------------------------------------------------------------------
 namespace static_polymorphism {
 template <typename D> class B {
     public:
@@ -52,6 +55,7 @@ class D : public B<D> {
 };
 } // namespace static_polymorphism
 
+// -----------------------------------------------------------------------------
 namespace static_polymorphism1 {
 template <typename D> class B {
     public:
@@ -63,6 +67,7 @@ template <typename D> class B {
     private:
     D* derived() { return static_cast<D*>(this); }
 };
+
 template <typename D> void apply(B<D>* b, int& i) { b->f(++i); }
 class D : public B<D> {
     public:
@@ -70,6 +75,7 @@ class D : public B<D> {
 };
 } // namespace static_polymorphism1
 
+// -----------------------------------------------------------------------------
 void BM_none(benchmark::State& state) {
     no_polymorphism::A* a = new no_polymorphism::A;
     int i = 0;
@@ -114,6 +120,7 @@ void BM_static1(benchmark::State& state) {
     state.SetItemsProcessed(32*state.iterations());
 }
 
+// -----------------------------------------------------------------------------
 BENCHMARK(BM_none);
 BENCHMARK(BM_dynamic);
 BENCHMARK(BM_static);

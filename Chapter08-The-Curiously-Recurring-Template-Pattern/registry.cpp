@@ -1,60 +1,97 @@
 #include <cstdlib>
 #include <iostream>
 
-template <typename D> class registry {
-    public:
+// ----------------------------------------------------------------------------- 
+template <typename D>
+class registry
+{
+public:
     static size_t count;
-    static D* head;
-    D* prev;
-    D* next;
-    protected:
-    registry() {
+    static D *head;
+    D *prev;
+    D *next;
+
+protected:
+    registry()
+    {
         ++count;
         prev = nullptr;
         next = head;
-        head = static_cast<D*>(this);
-        if (next) next->prev = head;
+        head = static_cast<D *>(this);
+        if (next)
+            next->prev = head;
     }
-    registry(const registry&) {
+    registry(const registry &)
+    {
         ++count;
         prev = nullptr;
         next = head;
-        head = static_cast<D*>(this);
-        if (next) next->prev = head;
+        head = static_cast<D *>(this);
+        if (next)
+            next->prev = head;
     }
-    ~registry() {
+    ~registry()
+    {
         --count;
-        if (prev) prev->next = next;
-        if (next) next->prev = prev;
-        if (head == this) head = next;
+        if (prev)
+            prev->next = next;
+        if (next)
+            next->prev = prev;
+        if (head == this)
+            head = next;
     }
-
 };
-template <typename D> size_t registry<D>::count(0);
-template <typename D> D* registry<D>::head(nullptr);
 
+// ----------------------------------------------------------------------------- 
+template <typename D>
+size_t registry<D>::count(0);
 
-class C : public registry<C> {
+template <typename D>
+D *registry<D>::head(nullptr);
+
+// ----------------------------------------------------------------------------- 
+class C : public registry<C>
+{
     int i_;
-    public:
+
+public:
     C(int i) : i_(i) {}
-    friend std::ostream& operator<<(std::ostream& out, const C& c) { out << c.i_; return out; }
+    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    {
+        out << c.i_;
+        return out;
+    }
 };
 
-class D : public registry<D> {
+// --------------- 
+class D : public registry<D>
+{
     int i_;
-    public:
+
+public:
     D(int i) : i_(i) {}
-    friend std::ostream& operator<<(std::ostream& out, const D& d) { out << d.i_; return out; }
+    friend std::ostream &operator<<(std::ostream &out, const D &d)
+    {
+        out << d.i_;
+        return out;
+    }
 };
 
-template <typename T> void report() {
-    std::cout << "Count: " << T::count; for (const T* p = T::head; p; p = p->next) std::cout << " " << *p; std::cout << std::endl;
+// ----------------------------------------------------------------------------- 
+template <typename T>
+void report()
+{
+    std::cout << "Count: " << T::count;
+    for (const T *p = T::head; p; p = p->next)
+        std::cout << " " << *p;
+    std::cout << std::endl;
 }
 
-int main() {
+// ----------------------------------------------------------------------------- 
+int main()
+{
     report<C>();
-    C* c4 = nullptr;
+    C *c4 = nullptr;
     {
         C c1(1);
         report<C>();
@@ -71,4 +108,3 @@ int main() {
     report<C>();
     report<D>();
 }
-
