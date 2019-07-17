@@ -57,4 +57,16 @@ is a chief engineering scientist in the Design-to-Silicon division of Mentor Gra
 ### Suggestions and Feedback
 [Click here](https://docs.google.com/forms/d/e/1FAIpQLSdy7dATC6QmEL81FIUuymZ0Wy9vH1jHkvpY57OiMeKGqib_Ow/viewform) if you have any feedback or suggestions.
 
+### Installation Notes for Ubuntu
+- Install Google Benchmark according to the documentation. [Google Benchmark installation](https://github.com/google/benchmark#installation)
+- Here the short version:
+    ```shell
+    $ git clone https://github.com/google/benchmark.git
+    $ git clone https://github.com/google/googletest.git benchmark/googletest
+    $ cd benchmark && mkdir build && cd build
+    $ cmake -DCMAKE_BUILD_TYPE=Release ..
+    $ cmake --build .
+    $ cmake --build . --target test
+    $ sudo cmake --build . --target install
+    ```
 
