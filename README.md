@@ -58,7 +58,7 @@ is a chief engineering scientist in the Design-to-Silicon division of Mentor Gra
 [Click here](https://docs.google.com/forms/d/e/1FAIpQLSdy7dATC6QmEL81FIUuymZ0Wy9vH1jHkvpY57OiMeKGqib_Ow/viewform) if you have any feedback or suggestions.
 
 ### Installation Notes for Ubuntu
-- Install Google Benchmark according to the documentation. [Google Benchmark installation](https://github.com/google/benchmark#installation)
+- Install Google Benchmark according to the documentation. See [Google Benchmark installation](https://github.com/google/benchmark#installation).
 - Here the short version:
     ```shell
     $ git clone https://github.com/google/benchmark.git
@@ -69,7 +69,7 @@ is a chief engineering scientist in the Design-to-Silicon division of Mentor Gra
     $ cmake --build . --target test
     $ sudo cmake --build . --target install
     ```
-- Install `cpupower` to inhibit cpu frequency scaling. [CPU Frequency Scaling using Google Benchmark](https://github.com/google/benchmark#disabling-cpu-frequency-scaling)
+- Install `cpupower` to inhibit cpu frequency scaling. See [CPU Frequency Scaling using Google Benchmark](https://github.com/google/benchmark#disabling-cpu-frequency-scaling).
     ```shell
     sudo apt install linux-tools-common linux-tools-generic
     sudo cpupower frequency-set --governor performance
