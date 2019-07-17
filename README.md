@@ -69,4 +69,10 @@ is a chief engineering scientist in the Design-to-Silicon division of Mentor Gra
     $ cmake --build . --target test
     $ sudo cmake --build . --target install
     ```
-
+- Install `cpupower` to inhibit cpu frequency scaling. [CPU Frequency Scaling using Google Benchmark](https://github.com/google/benchmark#disabling-cpu-frequency-scaling)
+    ```shell
+    sudo apt install linux-tools-common linux-tools-generic
+    sudo cpupower frequency-set --governor performance
+    ./mybench
+    sudo cpupower frequency-set --governor powersave
+    ```
