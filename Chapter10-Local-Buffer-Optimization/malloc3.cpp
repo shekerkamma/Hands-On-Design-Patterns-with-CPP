@@ -12,24 +12,27 @@
 #define REPEAT32(x) REPEAT16(x) REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
-void BM_malloc_free(benchmark::State& state) {
+void BM_malloc_free(benchmark::State &state)
+{
     const size_t S = state.range(0);
     const size_t N = state.range(1);
-    std::vector<void*> v(N);
-    for (size_t i = 0; i < N; ++i) v[i] = malloc(S);
-    for (auto _ : state) {
+    std::vector<void *> v(N);
+    for (size_t i = 0; i < N; ++i)
+        v[i] = malloc(S);
+    for (auto _ : state)
+    {
         REPEAT({
-        void* p = malloc(S);
-        benchmark::DoNotOptimize(p);
-        free(p);
+            void *p = malloc(S);
+            benchmark::DoNotOptimize(p);
+            free(p);
         });
     }
-    state.SetItemsProcessed(32*state.iterations());
-    for (size_t i = 0; i < N; ++i) free(v[i]);
+    state.SetItemsProcessed(32 * state.iterations());
+    for (size_t i = 0; i < N; ++i)
+        free(v[i]);
 }
 
 static const long max_threads = sysconf(_SC_NPROCESSORS_CONF);
-BENCHMARK(BM_malloc_free)->RangeMultiplier(2)->Ranges({{32, 256}, {1<<15, 1<<15}})->ThreadRange(1, max_threads);
+BENCHMARK(BM_malloc_free)->RangeMultiplier(2)->Ranges({{32, 256}, {1 << 15, 1 << 15}})->ThreadRange(1, max_threads);
 
 BENCHMARK_MAIN();
-

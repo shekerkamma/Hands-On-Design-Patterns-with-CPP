@@ -4,10 +4,12 @@
 
 #include "benchmark/benchmark.h"
 
-void BM_malloc_free(benchmark::State& state) {
+void BM_malloc_free(benchmark::State &state)
+{
     const size_t S = state.range(0);
-    for (auto _ : state) {
-        void* p = malloc(S);
+    for (auto _ : state)
+    {
+        void *p = malloc(S);
         benchmark::DoNotOptimize(p);
         free(p);
     }
@@ -18,4 +20,3 @@ void BM_malloc_free(benchmark::State& state) {
 BENCHMARK(BM_malloc_free)->RangeMultiplier(2)->Range(32, 256);
 
 BENCHMARK_MAIN();
-
