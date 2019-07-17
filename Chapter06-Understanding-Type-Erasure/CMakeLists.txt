@@ -7,6 +7,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(benchmark)
 
-add_executable(smartptr smartptr.cpp)
-add_executable(smartptr_extra smartptr_extra.cpp)
+add_executable(smartptr smartptr.cpp smartptr_extra.cpp)
 target_link_libraries(smartptr benchmark::benchmark)
