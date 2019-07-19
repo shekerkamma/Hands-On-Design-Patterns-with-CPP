@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <iostream>
 
 #include "benchmark/benchmark.h"
 
@@ -9,35 +10,38 @@
 #define REPEAT32(x) REPEAT16(x) REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
-#include <iostream>
-
-class Singleton {
-    public:
+class Singleton
+{
+public:
     Singleton() {}
-    int& get() { return value_; }
+    int &get() { return value_; }
 
-    private:
-    Singleton(const Singleton&) = delete;
-    Singleton& operator=(const Singleton&) = delete;
+private:
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton &) = delete;
 
-    private:
+private:
     static int value_;
 };
 int Singleton::value_ = 0;
 
-void BM_singleton(benchmark::State& state) {
+void BM_singleton(benchmark::State &state)
+{
     Singleton S;
-    for (auto _ : state) {
+    for (auto _ : state)
+    {
         REPEAT(benchmark::DoNotOptimize(++S.get());)
     }
-    state.SetItemsProcessed(32*state.iterations());
+    state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_singletons(benchmark::State& state) {
-    for (auto _ : state) {
+void BM_singletons(benchmark::State &state)
+{
+    for (auto _ : state)
+    {
         REPEAT(benchmark::DoNotOptimize(++Singleton().get());)
     }
-    state.SetItemsProcessed(32*state.iterations());
+    state.SetItemsProcessed(32 * state.iterations());
 }
 
 BENCHMARK(BM_singleton)->ThreadRange(1, 64);

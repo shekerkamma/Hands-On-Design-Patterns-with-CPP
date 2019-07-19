@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <iostream>
 
 #include "benchmark/benchmark.h"
 
@@ -9,41 +10,45 @@
 #define REPEAT32(x) REPEAT16(x) REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
-#include <iostream>
-
-class Singleton {
-    public:
-    static Singleton& instance() {
-        static Singleton* inst = new Singleton;
+class Singleton
+{
+public:
+    static Singleton &instance()
+    {
+        static Singleton *inst = new Singleton;
         return *inst;
     }
 
-    int& get() { return value_; }
+    int &get() { return value_; }
 
-    private:
+private:
     Singleton() : value_(0) { std::cout << "Singleton::Singleton()" << std::endl; }
     ~Singleton() { std::cout << "Singleton::~Singleton()" << std::endl; }
-    Singleton(const Singleton&) = delete;
-    Singleton& operator=(const Singleton&) = delete;
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton &) = delete;
 
-    private:
+private:
     int value_;
 };
 
-void BM_singleton(benchmark::State& state) {
+void BM_singleton(benchmark::State &state)
+{
     //Singleton S; // Does not compile - cannot create another one
-    Singleton& S = Singleton::instance();
-    for (auto _ : state) {
+    Singleton &S = Singleton::instance();
+    for (auto _ : state)
+    {
         REPEAT(benchmark::DoNotOptimize(++S.get());)
     }
-    state.SetItemsProcessed(32*state.iterations());
+    state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_singletons(benchmark::State& state) {
-    for (auto _ : state) {
+void BM_singletons(benchmark::State &state)
+{
+    for (auto _ : state)
+    {
         REPEAT(benchmark::DoNotOptimize(++Singleton::instance().get());)
     }
-    state.SetItemsProcessed(32*state.iterations());
+    state.SetItemsProcessed(32 * state.iterations());
 }
 
 BENCHMARK(BM_singleton)->ThreadRange(1, 64);
