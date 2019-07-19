@@ -30,7 +30,9 @@ private:
     static Singleton instance_;
     int value_;
 };
-Singleton Singleton::instance_;
+// Both works:
+// Singleton Singleton::instance_;
+Singleton Singleton::instance_{};
 
 void BM_singleton(benchmark::State &state)
 {

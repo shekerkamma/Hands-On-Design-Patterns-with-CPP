@@ -10,7 +10,10 @@
 #define REPEAT32(x) REPEAT16(x) REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
-struct SingletonImpl;
+// -----------------------------------------------
+// This would go into a separate header file:
+struct SingletonImpl; // Forward declaration:
+
 class Singleton
 {
 public:
@@ -19,7 +22,8 @@ public:
 private:
     static SingletonImpl &impl();
 };
-
+// -----------------------------------------------
+// This would go into the cpp file:
 struct SingletonImpl
 {
     SingletonImpl() : value_(0) {}
@@ -33,6 +37,7 @@ SingletonImpl &Singleton::impl()
     static SingletonImpl inst;
     return inst;
 }
+// -----------------------------------------------
 
 void BM_singleton(benchmark::State &state)
 {
