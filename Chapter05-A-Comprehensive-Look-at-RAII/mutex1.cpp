@@ -1,5 +1,4 @@
 #include <stdlib.h>
-
 #include <mutex>
 
 #include "gtest/gtest.h"

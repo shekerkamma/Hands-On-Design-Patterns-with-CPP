@@ -69,6 +69,15 @@ is a chief engineering scientist in the Design-to-Silicon division of Mentor Gra
     $ cmake --build . --target test
     $ sudo cmake --build . --target install
     ```
+- Install Google Test.
+- It is a standard CMake build with installation:
+    ```shell
+    $ git clone https://github.com/google/googletest.git
+    $ cd googletest && mkdir build && cd build
+    $ cmake ..
+    $ cmake --build .
+    $ sudo cmake --build . --target install
+    ```
 - Install `cpupower` to inhibit cpu frequency scaling. See [CPU Frequency Scaling using Google Benchmark](https://github.com/google/benchmark#disabling-cpu-frequency-scaling).
     ```shell
     $ sudo apt install linux-tools-common linux-tools-generic
