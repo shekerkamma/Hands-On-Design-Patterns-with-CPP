@@ -73,6 +73,7 @@ private:
 
 typedef void (*delete_int_t)(int *);
 void delete_int(int *p) { delete p; }
+
 template <typename T>
 void delete_T(T *p) { delete p; }
 
@@ -81,23 +82,31 @@ class SmartPtr
 {
 public:
     explicit SmartPtr(T *p = nullptr,
-                      const DeletionPolicy &deletion_policy = DeletionPolicy()) : p_(p),
-                                                                                  deletion_policy_(deletion_policy)
+                      // Why is this deletion_policy a reference?
+                      // Why is it DeletionPolicy() and not just DeletionPolicy? Is this template instantiation? No.
+                      // -> DeletionPolicy object is just default constructed. Most of the deletion policies examples
+                      // are structs. Except the function delete_int(int *p) and delete_T(T *p).
+                      // const DeletionPolicy &deletion_policy = DeletionPolicy()) : p_(p),
+                      const DeletionPolicy deletion_policy = DeletionPolicy()) : p_(p),
+                                                                                 deletion_policy_(deletion_policy)
     {
     }
     ~SmartPtr()
     {
         deletion_policy_(p_);
     }
-    void release() { p_ = NULL; }
-    T *operator->() { return p_; }
+    void release() { p_ = nullptr; }
+
+    T *operator->() { return p_; } // reference operator
     const T *operator->() const { return p_; }
-    T &operator*() { return *p_; }
+
+    T &operator*() { return *p_; } // content operator
     const T &operator*() const { return *p_; }
 
 private:
     T *p_;
     DeletionPolicy deletion_policy_;
+    // Delete copy constructor and assignment operator.
     SmartPtr(const SmartPtr &) = delete;
     SmartPtr &operator=(const SmartPtr &) = delete;
 };
@@ -121,7 +130,45 @@ int main()
     }
 
     {
+        // This does not work. delete_t<int> is not a type but a function.
+        // The second param to SmartPtr is always something callable.
+        // SmartPtr<int, delete_T<int>> p(new int(42), delete_T<int>);
+        // std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        // This compiles if you make deletion_policy not a reference in the constructor of SmartPtr.
+        // See also p. 551 where the issue of const& is discussed.
+        SmartPtr p(new int(42), delete_T<int>);
+        std::cout << *p << std::endl;
+    }
+
+    {
         SmartPtr<int, delete_int_t> p(new int(42), delete_T<int>);
         std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        // This compiles if you make deletion_policy not a reference in the constructor of SmartPtr.
+        SmartPtr p(new int(42), delete_int);
+        std::cout << *p << std::endl;
+    }
+
+    {
+        class C
+        {
+            // ...
+        };
+
+        class D
+        {
+            // ...
+        };
+
+        // Does not compile:
+        // SmartPtr<C, DeleteByOperator<D>> p(new C);
+        // SmartPtr<int, DeleteByOperator<double>> p(new int{42});
     }
 }

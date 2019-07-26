@@ -77,9 +77,10 @@ private:
     DeleteSmallHeap &operator=(const DeleteSmallHeap &) = delete;
 };
 
+// Empty base class optimization
 template <typename T, typename DeletionPolicy = DeleteByOperator<T>>
 class SmartPtr : private DeletionPolicy
-{ // Empty base class optimization
+{
 public:
     explicit SmartPtr(T *p = nullptr,
                       DeletionPolicy &&deletion_policy = DeletionPolicy()) : DeletionPolicy(std::move(deletion_policy)),
@@ -88,9 +89,11 @@ public:
     }
     ~SmartPtr()
     {
+        // This is how you call the call operator of the base class:
         DeletionPolicy::operator()(p_);
     }
-    void release() { p_ = NULL; }
+    // When we release the destructor won't do anything:
+    void release() { p_ = nullptr; }
     T *operator->() { return p_; }
     const T *operator->() const { return p_; }
     T &operator*() { return *p_; }
@@ -107,6 +110,7 @@ int main()
     {
         SmartPtr<int> p(new int(42));
         std::cout << *p << std::endl;
+        std::cout << "Sizeof SmartPtr: " << sizeof(p) << std::endl;
     }
 
     {

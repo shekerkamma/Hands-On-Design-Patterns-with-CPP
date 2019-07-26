@@ -69,6 +69,9 @@ private:
     SmallHeap &heap_;
 };
 
+template <typename T>
+void delete_T(T *p) { delete p; }
+
 template <typename T, typename DeletionPolicy = DeleteByOperator<T>>
 class SmartPtr
 {
@@ -106,5 +109,13 @@ int main()
         SmallHeap h;
         SmartPtr p{new (&h) int(42), DeleteSmallHeap<int>(h)};
         std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        // This compiles only if you make deletion_policy not a reference in the constructor of SmartPtr.
+        // See also p. 551 where the issue of const& is discussed.
+        // SmartPtr p(new int(42), delete_T<int>);
+        // std::cout << *p << std::endl;
     }
 }

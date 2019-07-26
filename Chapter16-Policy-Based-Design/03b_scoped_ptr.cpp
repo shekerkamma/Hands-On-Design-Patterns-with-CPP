@@ -77,11 +77,14 @@ private:
     DeleteSmallHeap &operator=(const DeleteSmallHeap &) = delete;
 };
 
+// P will be a SmartPtr<...>
 template <typename P>
 class WithRelease
 {
 public:
-    void release() { static_cast<P *>(this)->p_ = NULL; }
+    // WithRelease has access to p_ due to friendship.
+    // We cast this to P* (pointer to SmartPtr) and the access private member p_.
+    void release() { static_cast<P *>(this)->p_ = nullptr; }
 };
 
 template <typename P>
@@ -89,6 +92,7 @@ class NoRelease
 {
 };
 
+// CRTP. Class SmartPtr shows up as a template parameter of templated base class ReleasePolicy.
 template <typename T, typename DeletionPolicy = DeleteByOperator<T>, template <typename> class ReleasePolicy = WithRelease>
 class SmartPtr : private DeletionPolicy, public ReleasePolicy<SmartPtr<T, DeletionPolicy, ReleasePolicy>>
 {
@@ -126,6 +130,6 @@ int main()
         SmallHeap h;
         SmartPtr<int, DeleteSmallHeap<int>, NoRelease> p{new (&h) int(42), DeleteSmallHeap<int>(h)};
         std::cout << *p << std::endl;
-        //p.release();    // Does not compile
+        // p.release();    // Does not compile
     }
 }

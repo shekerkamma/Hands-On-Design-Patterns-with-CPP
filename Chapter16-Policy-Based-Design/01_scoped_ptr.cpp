@@ -11,10 +11,11 @@ public:
 
     ~SmartPtr()
     {
+        std::cout << "SmartPtr destructor." << std::endl;
         delete p_;
     }
 
-    void release() { p_ = NULL; }
+    void release() { p_ = nullptr; }
 
     T *operator->() { return p_; }
     const T *operator->() const { return p_; }
@@ -30,6 +31,14 @@ private:
 
 int main()
 {
-    SmartPtr<int> p(new int(42));
-    std::cout << *p << std::endl;
+    {
+        SmartPtr<int> p(new int(42));
+        std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        SmartPtr p(new int(42));
+        std::cout << *p << std::endl;
+    }
 }

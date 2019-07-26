@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 
+// This is just an example. A better one would be a class which refers to members of type T. (But we don't have any.)
 template <typename T>
 struct DeleteByOperator
 {

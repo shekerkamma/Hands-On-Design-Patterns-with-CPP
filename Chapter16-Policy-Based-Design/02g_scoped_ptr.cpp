@@ -71,6 +71,7 @@ private:
 
 typedef void (*delete_int_t)(int *);
 void delete_int(int *p) { delete p; }
+
 template <typename T>
 void delete_T(T *p) { delete p; }
 
@@ -83,6 +84,8 @@ public:
                                                                deletion_policy_(deletion_policy)
     {
     }
+
+    // deletion_policy is now a universal reference.
     explicit SmartPtr(T *p = nullptr,
                       DeletionPolicy &&deletion_policy = DeletionPolicy()) : p_(p),
                                                                              deletion_policy_(std::move(deletion_policy))
@@ -126,5 +129,12 @@ int main()
     {
         SmartPtr<int, delete_int_t> p(new int(42), delete_T<int>);
         std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        // First constructor is used for here where deletion_policy is a reference. -> Does not compile.
+        // SmartPtr p(new int(42), delete_T<int>);
+        // std::cout << *p << std::endl;
     }
 }

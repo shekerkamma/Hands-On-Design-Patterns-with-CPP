@@ -100,6 +100,7 @@ int main()
     {
         SmartPtr p(new int(42));
         std::cout << *p << std::endl;
+        std::cout << "Sizeof SmartPtr: " << sizeof(p) << std::endl;
     }
 
     {
@@ -108,8 +109,22 @@ int main()
     }
 
     {
+        // This does not compile. Types must be consistent.
+        // SmartPtr p(new int(42), DeleteByOperator<double>());
+        // std::cout << *p << std::endl;
+    }
+
+    {
         SmallHeap h;
         SmartPtr p{new (&h) int(42), DeleteSmallHeap<int>(h)};
         std::cout << *p << std::endl;
+    }
+
+    {
+        class C {
+            // ...
+        };
+        SmartPtr p1(new C);
+        SmartPtr p2(new C, DeleteByOperator<C>());
     }
 }

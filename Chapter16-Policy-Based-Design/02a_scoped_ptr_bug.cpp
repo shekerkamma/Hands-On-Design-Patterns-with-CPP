@@ -57,14 +57,14 @@ void *operator new(size_t s, SmallHeap *h) { return h->allocate(s); }
 template <typename T>
 struct DeleteSmallHeap
 {
-    ~DeleteSmallHeap()
-    {
-        std::cout << "Dtor " << this << std::endl;
-    }
     explicit DeleteSmallHeap(SmallHeap &heap)
         : heap_(heap)
     {
         std::cout << "Ctor " << this << std::endl;
+    }
+    ~DeleteSmallHeap()
+    {
+        std::cout << "Dtor " << this << std::endl;
     }
     void operator()(T *p) const
     {
@@ -99,6 +99,8 @@ public:
 
 private:
     T *p_;
+    // Deletion policy is now a const reference and causes a dangling pointer.
+    // See p.552.
     const DeletionPolicy &deletion_policy_;
     SmartPtr(const SmartPtr &) = delete;
     SmartPtr &operator=(const SmartPtr &) = delete;
@@ -112,6 +114,7 @@ int main()
     }
 
     {
+        std::cout << "Smallheap example." << std::endl;
         SmallHeap h;
         SmartPtr<int, DeleteSmallHeap<int>> p{new (&h) int(42), DeleteSmallHeap<int>(h)};
         std::cout << *p << std::endl;

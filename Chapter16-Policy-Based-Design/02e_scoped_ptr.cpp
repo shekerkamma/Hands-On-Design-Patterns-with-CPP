@@ -69,11 +69,13 @@ private:
     SmallHeap &heap_;
 };
 
+// template template parameter
 template <typename T, template <typename> class DeletionPolicy = DeleteByOperator>
 class SmartPtr
 {
 public:
     explicit SmartPtr(T *p = nullptr,
+                      // DeletionPolicy is based on T. This ensures the consistency of the object type in the primary smart pointer template and its policies.
                       const DeletionPolicy<T> &deletion_policy = DeletionPolicy<T>()) : p_(p),
                                                                                         deletion_policy_(deletion_policy)
     {

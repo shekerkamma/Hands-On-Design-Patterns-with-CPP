@@ -58,6 +58,7 @@ struct DeleteSmallHeap
 {
     explicit DeleteSmallHeap(SmallHeap &heap)
         : heap_(heap) {}
+
     template <typename T>
     void operator()(T *p) const
     {
@@ -105,6 +106,21 @@ int main()
     {
         SmallHeap h;
         SmartPtr<int, DeleteSmallHeap> p{new (&h) int(42), DeleteSmallHeap(h)};
+        std::cout << *p << std::endl;
+    }
+
+    {
+        // C++17
+        class C
+        {
+            // ...
+        };
+        SmartPtr p(new C, DeleteByOperator());
+    }
+
+    {
+        // C++17
+        SmartPtr p(new int(42), DeleteByOperator());
         std::cout << *p << std::endl;
     }
 }
