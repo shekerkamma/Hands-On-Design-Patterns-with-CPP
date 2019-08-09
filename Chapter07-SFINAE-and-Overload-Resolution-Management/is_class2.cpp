@@ -1,8 +1,7 @@
 #include <iostream>
 
 template <typename T>
-class is_class
-{
+class is_class {
     template <typename C>
     static char test(int C::*); // selected if C is a class type
 
@@ -18,8 +17,7 @@ public:
     static constexpr bool value = sizeof(test<T>(NULL)) == 1;
 };
 
-struct A
-{
+struct A {
 };
 
 int main()

@@ -2,19 +2,19 @@
 
 // ---------------------------------------------------------------------------
 template <typename T>
-auto have_star_equal(const T &x, size_t n) -> decltype(T(x) *= n, std::true_type());
+auto have_star_equal(const T& x, size_t n) -> decltype(T(x) *= n, std::true_type());
 
 std::false_type have_star_equal(...);
 
 // ---------------------------------------------------------------------------
 template <typename T>
-auto have_star(const T &x, size_t n) -> decltype(x * n, std::true_type());
+auto have_star(const T& x, size_t n) -> decltype(x * n, std::true_type());
 
 std::false_type have_star(...);
 
 // ---------------------------------------------------------------------------
 template <typename T>
-auto have_plus(const T &x) -> decltype(x + x, std::true_type());
+auto have_plus(const T& x) -> decltype(x + x, std::true_type());
 
 std::false_type have_plus(...);
 
@@ -23,9 +23,8 @@ template <typename T, bool have_star_equal, bool have_star, bool have_plus>
 struct increase_helper;
 
 template <typename T, bool have_star, bool have_plus>
-struct increase_helper<T, true, have_star, have_plus>
-{
-    static auto f(const T &x, size_t n)
+struct increase_helper<T, true, have_star, have_plus> {
+    static auto f(const T& x, size_t n)
     {
         std::cout << "T *= n" << std::endl;
         T y(x);
@@ -34,9 +33,8 @@ struct increase_helper<T, true, have_star, have_plus>
 };
 
 template <typename T, bool have_plus>
-struct increase_helper<T, false, true, have_plus>
-{
-    static auto f(const T &x, size_t n)
+struct increase_helper<T, false, true, have_plus> {
+    static auto f(const T& x, size_t n)
     {
         std::cout << "T * n" << std::endl;
         return x * n;
@@ -44,9 +42,8 @@ struct increase_helper<T, false, true, have_plus>
 };
 
 template <typename T>
-struct increase_helper<T, false, false, true>
-{
-    static auto f(const T &x, size_t n)
+struct increase_helper<T, false, false, true> {
+    static auto f(const T& x, size_t n)
     {
         std::cout << "T + T + ... + T" << std::endl;
         T y(x);
@@ -57,9 +54,8 @@ struct increase_helper<T, false, false, true>
 };
 
 template <typename T>
-struct increase_helper<T, false, false, false>
-{
-    static auto f(const T &x, size_t n)
+struct increase_helper<T, false, false, false> {
+    static auto f(const T& x, size_t n)
     {
         std::cout << "Cannot increase" << std::endl;
         return x;
@@ -68,19 +64,21 @@ struct increase_helper<T, false, false, false>
 
 // ---------------------------------------------------------------------------
 template <typename T>
-auto increase(const T &x, size_t n)
+auto increase(const T& x, size_t n)
 {
     return increase_helper<T,
-                           decltype(have_star_equal(x, n))::value,
-                           decltype(have_star(x, n))::value,
-                           decltype(have_plus(x))::value>::f(x, n);
+        decltype(have_star_equal(x, n))::value,
+        decltype(have_star(x, n))::value,
+        decltype(have_plus(x))::value>::f(x, n);
 }
 
 // ---------------------------------------------------------------------------
-class A
-{
+class A {
 public:
-    explicit A(int i) : i_(i) {}
+    explicit A(int i)
+        : i_(i)
+    {
+    }
     A operator*=(size_t n)
     {
         std::cout << "A*=n" << std::endl;
@@ -92,11 +90,13 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-class B
-{
+class B {
 public:
-    explicit B(int i) : i_(i) {}
-    friend B operator*(const B &lhs, size_t rhs)
+    explicit B(int i)
+        : i_(i)
+    {
+    }
+    friend B operator*(const B& lhs, size_t rhs)
     {
         std::cout << "B*n" << std::endl;
         return B(lhs.i_ * rhs);
@@ -107,16 +107,18 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-class AB
-{
+class AB {
 public:
-    explicit AB(int i) : i_(i) {}
+    explicit AB(int i)
+        : i_(i)
+    {
+    }
     AB operator*=(size_t n)
     {
         std::cout << "AB*=n" << std::endl;
         return AB(i_ * n);
     }
-    friend AB operator*(const AB &lhs, size_t rhs)
+    friend AB operator*(const AB& lhs, size_t rhs)
     {
         std::cout << "AB*n" << std::endl;
         return AB(lhs.i_ * rhs);
@@ -126,11 +128,13 @@ private:
     int i_;
 };
 
-class C
-{
+class C {
 public:
-    explicit C(int i) : i_(i) {}
-    friend C operator+(const C &lhs, const C &rhs)
+    explicit C(int i)
+        : i_(i)
+    {
+    }
+    friend C operator+(const C& lhs, const C& rhs)
     {
         std::cout << "C + C" << std::endl;
         return C(lhs.i_ * rhs.i_);

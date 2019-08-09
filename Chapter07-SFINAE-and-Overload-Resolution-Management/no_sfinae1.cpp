@@ -11,8 +11,7 @@ void f(...)
     std::cout << "f(...)" << std::endl;
 }
 
-struct A
-{
+struct A {
     typedef int t;
     t i;
 };
@@ -24,6 +23,6 @@ int main()
     // First template is used and leads to compilation error: ‘i’ is not a member of ‘int’
     // f(0);
 
-    A a{5};
+    A a { 5 };
     f(a); // sizeof f(T): 4
 }

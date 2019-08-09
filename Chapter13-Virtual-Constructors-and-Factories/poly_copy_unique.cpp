@@ -1,14 +1,12 @@
 #include <iostream>
 #include <memory>
 
-class Base
-{
+class Base {
 public:
     virtual std::unique_ptr<Base> clone() const = 0;
 };
 
-class Derived : public Base
-{
+class Derived : public Base {
 public:
     std::unique_ptr<Base> clone() const { return std::unique_ptr<Base>(new Derived(*this)); }
 };

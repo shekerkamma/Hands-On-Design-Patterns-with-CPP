@@ -1,7 +1,9 @@
-class Base
-{
+class Base {
 public:
-    Base() : i_() {}
+    Base()
+        : i_()
+    {
+    }
     virtual void increment(long v) { i_ += v; }
 
 private:
@@ -9,11 +11,18 @@ private:
 };
 
 template <typename T>
-class Derived : public T
-{
+class Derived : public T {
 public:
-    Derived() : T(), j_() {}
-    Derived(long i, long j) : T(i), j_(j) {}
+    Derived()
+        : T()
+        , j_()
+    {
+    }
+    Derived(long i, long j)
+        : T(i)
+        , j_(j)
+    {
+    }
     void increment(long v)
     {
         j_ += v;

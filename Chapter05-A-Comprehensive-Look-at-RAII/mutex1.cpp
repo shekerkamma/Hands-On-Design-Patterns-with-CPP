@@ -1,12 +1,16 @@
-#include <stdlib.h>
 #include <mutex>
+#include <stdlib.h>
 
 #include "gtest/gtest.h"
 
-class mutex_guard
-{
+class mutex_guard {
 public:
-    explicit mutex_guard(std::mutex &m) : m_(m), must_unlock_(true) { m_.lock(); }
+    explicit mutex_guard(std::mutex& m)
+        : m_(m)
+        , must_unlock_(true)
+    {
+        m_.lock();
+    }
     ~mutex_guard()
     {
         if (must_unlock_)
@@ -19,7 +23,7 @@ public:
     }
 
 private:
-    std::mutex &m_;
+    std::mutex& m_;
     bool must_unlock_;
 };
 
@@ -37,14 +41,11 @@ TEST(mutex_guard, LockUnlock)
 
 TEST(Scoped_ptr, ThrowNoLeak)
 {
-    try
-    {
+    try {
         mutex_guard lg(m);
         EXPECT_FALSE(m.try_lock());
         throw 1;
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
     EXPECT_TRUE(m.try_lock());
     m.unlock();

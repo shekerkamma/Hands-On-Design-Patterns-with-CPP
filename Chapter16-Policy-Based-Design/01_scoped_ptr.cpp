@@ -3,11 +3,12 @@
 #include <iostream>
 
 template <typename T>
-class SmartPtr
-{
+class SmartPtr {
 public:
-    explicit SmartPtr(T *p = nullptr)
-        : p_(p) {}
+    explicit SmartPtr(T* p = nullptr)
+        : p_(p)
+    {
+    }
 
     ~SmartPtr()
     {
@@ -17,16 +18,16 @@ public:
 
     void release() { p_ = nullptr; }
 
-    T *operator->() { return p_; }
-    const T *operator->() const { return p_; }
+    T* operator->() { return p_; }
+    const T* operator->() const { return p_; }
 
-    T &operator*() { return *p_; }
-    const T &operator*() const { return *p_; }
+    T& operator*() { return *p_; }
+    const T& operator*() const { return *p_; }
 
 private:
-    T *p_;
-    SmartPtr(const SmartPtr &) = delete;
-    SmartPtr &operator=(const SmartPtr &) = delete;
+    T* p_;
+    SmartPtr(const SmartPtr&) = delete;
+    SmartPtr& operator=(const SmartPtr&) = delete;
 };
 
 int main()

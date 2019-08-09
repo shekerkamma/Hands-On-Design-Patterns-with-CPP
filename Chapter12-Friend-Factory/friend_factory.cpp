@@ -1,13 +1,15 @@
 #include <iostream>
 
 template <typename T>
-class C
-{
+class C {
     T x_;
 
 public:
-    C(T x) : x_(x) {}
-    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    C(T x)
+        : x_(x)
+    {
+    }
+    friend std::ostream& operator<<(std::ostream& out, const C& c)
     {
         out << c.x_;
         return out;
@@ -15,16 +17,17 @@ public:
     friend C increase(C c, T dx) { return C(c.x_ + dx); }
 };
 
-namespace ND
-{
+namespace ND {
 template <typename T>
-class D
-{
+class D {
     T x_;
 
 public:
-    D(T x) : x_(x) {}
-    friend std::ostream &operator<<(std::ostream &out, const D &d)
+    D(T x)
+        : x_(x)
+    {
+    }
+    friend std::ostream& operator<<(std::ostream& out, const D& d)
     {
         out << d.x_;
         return out;

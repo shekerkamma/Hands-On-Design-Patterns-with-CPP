@@ -1,22 +1,24 @@
 #include <iostream>
 
 template <typename T>
-class C
-{
+class C {
     T x_;
 
 public:
-    C(T x) : x_(x) {}
+    C(T x)
+        : x_(x)
+    {
+    }
     template <typename U>
-    friend C<U> operator+(const C<U> &lhs, const C<U> &rhs);
-    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    friend C<U> operator+(const C<U>& lhs, const C<U>& rhs);
+    friend std::ostream& operator<<(std::ostream& out, const C& c)
     {
         out << c.x_;
         return out;
     }
 };
 template <typename T>
-C<T> operator+(const C<T> &lhs, const C<T> &rhs) { return C<T>(lhs.x_ + rhs.x_); }
+C<T> operator+(const C<T>& lhs, const C<T>& rhs) { return C<T>(lhs.x_ + rhs.x_); }
 
 int main()
 {

@@ -1,7 +1,7 @@
 #include <iostream>
 
 template <typename T>
-void f(typename T::t &i)
+void f(typename T::t& i)
 {
     std::cout << "f(T::t)" << std::endl;
 }
@@ -12,10 +12,8 @@ void f(T i)
     std::cout << "f(T)" << std::endl;
 }
 
-struct A
-{
-    struct t
-    {
+struct A {
+    struct t {
         int i;
     };
     t i;
@@ -23,10 +21,10 @@ struct A
 
 int main()
 {
-    A a{5};
+    A a { 5 };
 
     f<A>(a.i); // f(T::T)
     f<int>(5); // f(T)
-    f(a.i);    // f(T)
-    f(5);      // f(T)
+    f(a.i); // f(T)
+    f(5); // f(T)
 }

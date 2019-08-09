@@ -1,7 +1,6 @@
 #include <iostream>
 
-namespace implementation
-{
+namespace implementation {
 template <typename C>
 static char test(int C::*); // selected if C is a class type
 
@@ -10,12 +9,10 @@ static int test(...); // selected otherwise
 } // namespace implementation
 
 template <class T>
-struct is_class : std::integral_constant<bool, sizeof(implementation::test<T>(NULL)) == sizeof(char)>
-{
+struct is_class : std::integral_constant<bool, sizeof(implementation::test<T>(NULL)) == sizeof(char)> {
 };
 
-struct A
-{
+struct A {
 };
 
 int main()

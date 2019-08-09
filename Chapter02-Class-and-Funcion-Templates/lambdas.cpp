@@ -1,12 +1,11 @@
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
-void f(int i){};
+void f(int i) {};
 
-struct G
-{
-    void operator()(int i){};
+struct G {
+    void operator()(int i) {};
 };
 
 // compare() is too far away (in real code) from sort in do_work()
@@ -24,8 +23,7 @@ void do_work1()
 {
     std::vector<int> v;
     //.....
-    struct compare
-    {
+    struct compare {
         bool operator()(int i, int j) const { return i < j; }
     };
 
@@ -48,10 +46,12 @@ void do_work3()
 {
     std::vector<double> v;
     // .....
-    struct compare_with_tolerance
-    {
+    struct compare_with_tolerance {
         const double tolerance;
-        explicit compare_with_tolerance(double tol) : tolerance(tol) {}
+        explicit compare_with_tolerance(double tol)
+            : tolerance(tol)
+        {
+        }
         bool operator()(double x, double y) const
         {
             return x < y && std::abs(x - y) > tolerance;
@@ -82,19 +82,31 @@ struct overload_set;
 
 // overload_set inherits from the lambda expression
 template <typename F1>
-struct overload_set<F1> : public F1
-{
-    overload_set(F1 &&f1) : F1(std::move(f1)) {}
-    overload_set(const F1 &f1) : F1(f1) {}
+struct overload_set<F1> : public F1 {
+    overload_set(F1&& f1)
+        : F1(std::move(f1))
+    {
+    }
+    overload_set(const F1& f1)
+        : F1(f1)
+    {
+    }
     // Adds function call operator of lamda expression to public interface of overload_set class.
     using F1::operator();
 };
 
 template <typename F1, typename... F>
-struct overload_set<F1, F...> : public F1, public overload_set<F...>
-{
-    overload_set(F1 &&f1, F &&... f) : F1(std::move(f1)), overload_set<F...>(std::forward<F>(f)...) {}
-    overload_set(const F1 &f1, F &&... f) : F1(f1), overload_set<F...>(std::forward<F>(f)...) {}
+struct overload_set<F1, F...> : public F1, public overload_set<F...> {
+    overload_set(F1&& f1, F&&... f)
+        : F1(std::move(f1))
+        , overload_set<F...>(std::forward<F>(f)...)
+    {
+    }
+    overload_set(const F1& f1, F&&... f)
+        : F1(f1)
+        , overload_set<F...>(std::forward<F>(f)...)
+    {
+    }
     using F1::operator();
 };
 
@@ -102,28 +114,30 @@ struct overload_set<F1, F...> : public F1, public overload_set<F...>
 // Not a convenience, we need type deduction!
 // Helper function deduces the types of all lambda expressions.
 template <typename... F>
-auto overload(F &&... f)
+auto overload(F&&... f)
 {
     return overload_set<F...>(std::forward<F>(f)...);
 }
 
 // using parameter packs (pp) (C++17)
-// The variadic template inherits directly from the parameter pack. 
+// The variadic template inherits directly from the parameter pack.
 template <typename... F>
-struct overload_set_pp : public F...
-{
-    overload_set_pp(F &&... f) : F(std::forward<F>(f))... {}
+struct overload_set_pp : public F... {
+    overload_set_pp(F&&... f)
+        : F(std::forward<F>(f))...
+    {
+    }
     using F::operator()...; // C++17
 };
 
 // Helper function for parameter packs not needed, actually.
 template <typename... F>
-auto overload_pp(F &&... f)
+auto overload_pp(F&&... f)
 {
     return overload_set_pp<F...>(std::forward<F>(f)...);
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
     {
         f(5); // Function
@@ -136,8 +150,8 @@ int main(int argc, char const *argv[])
         double d = 7.3;
         // Now we can overload lambda expression!
         auto l = overload(
-            [](int *i) { std::cout << "i=" << *i << std::endl; },
-            [](double *d) { std::cout << "d=" << *d << std::endl; });
+            [](int* i) { std::cout << "i=" << *i << std::endl; },
+            [](double* d) { std::cout << "d=" << *d << std::endl; });
 
         l(&i); // i=5
         l(&d); // d=5.3
@@ -151,8 +165,8 @@ int main(int argc, char const *argv[])
         // Now we can overload lambda expression!
         // Helper function overload_pp() not needed but of course still works.
         auto l = overload_set_pp(
-            [](int *i) { std::cout << "i=" << *i << std::endl; },
-            [](double *d) { std::cout << "d=" << *d << std::endl; });
+            [](int* i) { std::cout << "i=" << *i << std::endl; },
+            [](double* d) { std::cout << "d=" << *d << std::endl; });
 
         l(&i); // i=5
         l(&d); // d=5.3

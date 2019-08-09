@@ -1,7 +1,6 @@
 #include <iostream>
 
-struct A
-{
+struct A {
 };
 
 template <typename T>
@@ -18,11 +17,11 @@ void f(...)
 
 int main()
 {
-    f<int>(1.0);   // No type deduction. Type is int. But there is no int::* (not valid syntax). So first template is eliminated.
-    f<int>(0);     // Argument does not matter as second template is used. Argument is variadic. Does not matter at run-time - not used.
-    f<int>('a');   // Argument does not matter.
-    f<int>(NULL);  // Argument does not matter.
-    f<A>(0);       // Type is A. There exists A::* as valid syntax. So first template is used.
+    f<int>(1.0); // No type deduction. Type is int. But there is no int::* (not valid syntax). So first template is eliminated.
+    f<int>(0); // Argument does not matter as second template is used. Argument is variadic. Does not matter at run-time - not used.
+    f<int>('a'); // Argument does not matter.
+    f<int>(NULL); // Argument does not matter.
+    f<A>(0); // Type is A. There exists A::* as valid syntax. So first template is used.
     f<A>(nullptr); // Type is A. There exists A::* as valid syntax. So first template is used.
-    f<A>(1000);    // 1000 is an int and not a pointer. -> "T is not a class."
+    f<A>(1000); // 1000 is an int and not a pointer. -> "T is not a class."
 }

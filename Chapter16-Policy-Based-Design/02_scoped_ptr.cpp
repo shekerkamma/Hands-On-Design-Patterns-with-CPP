@@ -1,23 +1,21 @@
 // Version 01 with deletion policy.
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 
 // Signature of call-operator is the same for all deletion policies: void operator()(T *p) const
 
 template <typename T>
-struct DeleteByOperator
-{
-    void operator()(T *p) const
+struct DeleteByOperator {
+    void operator()(T* p) const
     {
         delete p;
     }
 };
 
 template <typename T>
-struct DeleteByFree
-{
-    void operator()(T *p) const
+struct DeleteByFree {
+    void operator()(T* p) const
     {
         p->~T();
         free(p);
@@ -25,25 +23,23 @@ struct DeleteByFree
 };
 
 template <typename T>
-struct DeleteDestructorOnly
-{
-    void operator()(T *p) const
+struct DeleteDestructorOnly {
+    void operator()(T* p) const
     {
         p->~T();
     }
 };
 
-class SmallHeap
-{
+class SmallHeap {
 public:
     SmallHeap() {}
     ~SmallHeap() {}
-    void *allocate(size_t s)
+    void* allocate(size_t s)
     {
         assert(s <= size_);
         return mem_;
     }
-    void deallocate(void *p)
+    void deallocate(void* p)
     {
         assert(p == mem_);
     }
@@ -51,44 +47,45 @@ public:
 private:
     static constexpr size_t size_ = 1024;
     char mem_[size_];
-    SmallHeap(const SmallHeap &) = delete;
-    SmallHeap &operator=(const SmallHeap &) = delete;
+    SmallHeap(const SmallHeap&) = delete;
+    SmallHeap& operator=(const SmallHeap&) = delete;
 };
-void *operator new(size_t s, SmallHeap *h) { return h->allocate(s); }
+void* operator new(size_t s, SmallHeap* h) { return h->allocate(s); }
 
 template <typename T>
-struct DeleteSmallHeap
-{
-    explicit DeleteSmallHeap(SmallHeap &heap)
-        : heap_(heap) {}
-    void operator()(T *p) const
+struct DeleteSmallHeap {
+    explicit DeleteSmallHeap(SmallHeap& heap)
+        : heap_(heap)
+    {
+    }
+    void operator()(T* p) const
     {
         p->~T();
         heap_.deallocate(p);
     }
 
 private:
-    SmallHeap &heap_;
+    SmallHeap& heap_;
 };
 
-typedef void (*delete_int_t)(int *);
-void delete_int(int *p) { delete p; }
+typedef void (*delete_int_t)(int*);
+void delete_int(int* p) { delete p; }
 
 template <typename T>
-void delete_T(T *p) { delete p; }
+void delete_T(T* p) { delete p; }
 
 template <typename T, typename DeletionPolicy = DeleteByOperator<T>>
-class SmartPtr
-{
+class SmartPtr {
 public:
-    explicit SmartPtr(T *p = nullptr,
-                      // Why is this deletion_policy a reference?
-                      // Why is it DeletionPolicy() and not just DeletionPolicy? Is this template instantiation? No.
-                      // -> DeletionPolicy object is just default constructed. Most of the deletion policies examples
-                      // are structs. Except the function delete_int(int *p) and delete_T(T *p).
-                      // const DeletionPolicy &deletion_policy = DeletionPolicy()) : p_(p),
-                      const DeletionPolicy deletion_policy = DeletionPolicy()) : p_(p),
-                                                                                 deletion_policy_(deletion_policy)
+    explicit SmartPtr(T* p = nullptr,
+        // Why is this deletion_policy a reference?
+        // Why is it DeletionPolicy() and not just DeletionPolicy? Is this template instantiation? No.
+        // -> DeletionPolicy object is just default constructed. Most of the deletion policies examples
+        // are structs. Except the function delete_int(int *p) and delete_T(T *p).
+        // const DeletionPolicy &deletion_policy = DeletionPolicy()) : p_(p),
+        const DeletionPolicy deletion_policy = DeletionPolicy())
+        : p_(p)
+        , deletion_policy_(deletion_policy)
     {
     }
     ~SmartPtr()
@@ -97,18 +94,18 @@ public:
     }
     void release() { p_ = nullptr; }
 
-    T *operator->() { return p_; } // reference operator
-    const T *operator->() const { return p_; }
+    T* operator->() { return p_; } // reference operator
+    const T* operator->() const { return p_; }
 
-    T &operator*() { return *p_; } // content operator
-    const T &operator*() const { return *p_; }
+    T& operator*() { return *p_; } // content operator
+    const T& operator*() const { return *p_; }
 
 private:
-    T *p_;
+    T* p_;
     DeletionPolicy deletion_policy_;
     // Delete copy constructor and assignment operator.
-    SmartPtr(const SmartPtr &) = delete;
-    SmartPtr &operator=(const SmartPtr &) = delete;
+    SmartPtr(const SmartPtr&) = delete;
+    SmartPtr& operator=(const SmartPtr&) = delete;
 };
 
 int main()
@@ -120,7 +117,7 @@ int main()
 
     {
         SmallHeap h;
-        SmartPtr<int, DeleteSmallHeap<int>> q{new (&h) int(42), DeleteSmallHeap<int>(h)};
+        SmartPtr<int, DeleteSmallHeap<int>> q { new (&h) int(42), DeleteSmallHeap<int>(h) };
         std::cout << *q << std::endl;
     }
 
@@ -157,13 +154,11 @@ int main()
     }
 
     {
-        class C
-        {
+        class C {
             // ...
         };
 
-        class D
-        {
+        class D {
             // ...
         };
 

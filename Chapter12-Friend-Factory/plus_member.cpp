@@ -1,13 +1,15 @@
 #include <iostream>
 
-class C
-{
+class C {
     int x_;
 
 public:
-    C(int x) : x_(x) {}
-    C operator+(const C &rhs) const { return C(x_ + rhs.x_); }
-    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    C(int x)
+        : x_(x)
+    {
+    }
+    C operator+(const C& rhs) const { return C(x_ + rhs.x_); }
+    friend std::ostream& operator<<(std::ostream& out, const C& c)
     {
         out << c.x_;
         return out;

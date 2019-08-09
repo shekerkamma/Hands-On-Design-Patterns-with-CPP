@@ -2,18 +2,16 @@
 #include <memory>
 
 template <typename Derived>
-class Base
-{
+class Base {
 public:
     virtual std::unique_ptr<Derived> clone() const = 0;
     std::unique_ptr<Derived> clone1() const
     {
-        return std::unique_ptr<Derived>(new Derived(*static_cast<const Derived *>(this)));
+        return std::unique_ptr<Derived>(new Derived(*static_cast<const Derived*>(this)));
     }
 };
 
-class Derived : public Base<Derived>
-{
+class Derived : public Base<Derived> {
 public:
     std::unique_ptr<Derived> clone() const { return std::unique_ptr<Derived>(new Derived(*this)); }
 };

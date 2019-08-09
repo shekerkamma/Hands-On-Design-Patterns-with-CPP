@@ -1,17 +1,18 @@
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0) {}
+    Storage()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -34,10 +35,12 @@ private:
 };
 
 // Demo memory index, does nothing useful but may throw exception.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -59,41 +62,55 @@ private:
     int i1_;
 };
 
-class ScopeGuardImplBase
-{
+class ScopeGuardImplBase {
 public:
-    ScopeGuardImplBase() : commit_(false) {}
+    ScopeGuardImplBase()
+        : commit_(false)
+    {
+    }
     void commit() const noexcept { commit_ = true; }
 
 protected:
-    ScopeGuardImplBase(ScopeGuardImplBase &&other) : commit_(other.commit_) { other.commit(); }
+    ScopeGuardImplBase(ScopeGuardImplBase&& other)
+        : commit_(other.commit_)
+    {
+        other.commit();
+    }
     ~ScopeGuardImplBase() {}
     mutable bool commit_;
 
 private:
-    ScopeGuardImplBase &operator=(const ScopeGuardImplBase &) = delete;
+    ScopeGuardImplBase& operator=(const ScopeGuardImplBase&) = delete;
 };
-typedef const ScopeGuardImplBase &ScopeGuard;
+typedef const ScopeGuardImplBase& ScopeGuard;
 
 template <typename MemFunc, typename Obj>
-class ScopeGuardImpl : public ScopeGuardImplBase
-{
+class ScopeGuardImpl : public ScopeGuardImplBase {
 public:
-    ScopeGuardImpl(const MemFunc &memfunc, Obj &obj) : memfunc_(memfunc), obj_(obj) {}
+    ScopeGuardImpl(const MemFunc& memfunc, Obj& obj)
+        : memfunc_(memfunc)
+        , obj_(obj)
+    {
+    }
     ~ScopeGuardImpl()
     {
         if (!commit_)
             (obj_.*memfunc_)();
     }
-    ScopeGuardImpl(ScopeGuardImpl &&other) : ScopeGuardImplBase(std::move(other)), memfunc_(other.memfunc_), obj_(other.obj_) {}
+    ScopeGuardImpl(ScopeGuardImpl&& other)
+        : ScopeGuardImplBase(std::move(other))
+        , memfunc_(other.memfunc_)
+        , obj_(other.obj_)
+    {
+    }
 
 private:
-    const MemFunc &memfunc_;
-    Obj &obj_;
+    const MemFunc& memfunc_;
+    Obj& obj_;
 };
 
 template <typename MemFunc, typename Obj>
-ScopeGuardImpl<MemFunc, Obj> MakeGuard(const MemFunc &memfunc, Obj &obj)
+ScopeGuardImpl<MemFunc, Obj> MakeGuard(const MemFunc& memfunc, Obj& obj)
 {
     return ScopeGuardImpl<MemFunc, Obj>(memfunc, obj);
 }
@@ -102,15 +119,12 @@ int main()
 {
     Storage S;
     Index I;
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
         ScopeGuard SG = MakeGuard(&Storage::undo, S);
         I.insert(42, FAIL_THROW);
         SG.commit();
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     if (S.get() != I.get())

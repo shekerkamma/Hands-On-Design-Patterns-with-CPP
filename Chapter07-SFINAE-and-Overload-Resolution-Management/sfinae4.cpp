@@ -12,18 +12,14 @@ void f(T t, char (*)[1 - N % 2] = NULL)
     std::cout << "N=" << N << " is even" << std::endl;
 }
 
-struct A
-{
-    enum
-    {
+struct A {
+    enum {
         N = 5
     };
 };
 
-struct B
-{
-    enum
-    {
+struct B {
+    enum {
         N = 8
     };
 };

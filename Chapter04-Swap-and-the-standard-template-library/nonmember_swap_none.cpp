@@ -1,21 +1,37 @@
-#include <utility>
 #include <iostream>
+#include <utility>
 
 using std::swap;
 
 namespace N {
 class C {
-    public:
-    explicit C(int i) : i_(i) {}
-    C(const C& rhs) : i_(rhs.i_) { std::cout << "C(const C&)" << std::endl; }
-    C& operator=(const C& rhs) { i_ = rhs.i_; std::cout << "C = C&" << std::endl; return *this; }
-    void swap(C& rhs) noexcept { std::cout << "C::swap" << std::endl; std::swap(i_, rhs.i_); }
+public:
+    explicit C(int i)
+        : i_(i)
+    {
+    }
+    C(const C& rhs)
+        : i_(rhs.i_)
+    {
+        std::cout << "C(const C&)" << std::endl;
+    }
+    C& operator=(const C& rhs)
+    {
+        i_ = rhs.i_;
+        std::cout << "C = C&" << std::endl;
+        return *this;
+    }
+    void swap(C& rhs) noexcept
+    {
+        std::cout << "C::swap" << std::endl;
+        std::swap(i_, rhs.i_);
+    }
     int i_;
 };
 }
 
-
-int main() {
+int main()
+{
     N::C c1(1), c2(2);
     std::cout << "\nInitial:" << std::endl;
     std::cout << "c1: " << c1.i_ << " c2: " << c2.i_ << std::endl;

@@ -1,17 +1,18 @@
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0) {}
+    Storage()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -32,13 +33,15 @@ private:
     int i_;
     int i1_;
 };
-void undo(Storage &S) { S.undo(); }
+void undo(Storage& S) { S.undo(); }
 
 // Demo memory index, does nothing useful but may throw exception.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -60,26 +63,35 @@ private:
     int i1_;
 };
 
-class ScopeGuardImplBase
-{
+class ScopeGuardImplBase {
 public:
-    ScopeGuardImplBase() : commit_(false) {}
+    ScopeGuardImplBase()
+        : commit_(false)
+    {
+    }
     void commit() const noexcept { commit_ = true; }
 
 protected:
-    ScopeGuardImplBase(const ScopeGuardImplBase &other) : commit_(other.commit_) { other.commit(); }
+    ScopeGuardImplBase(const ScopeGuardImplBase& other)
+        : commit_(other.commit_)
+    {
+        other.commit();
+    }
     ~ScopeGuardImplBase() {}
     mutable bool commit_;
 
 private:
-    ScopeGuardImplBase &operator=(const ScopeGuardImplBase &) = delete;
+    ScopeGuardImplBase& operator=(const ScopeGuardImplBase&) = delete;
 };
 
 template <typename Func, typename Arg>
-class ScopeGuardImpl : public ScopeGuardImplBase
-{
+class ScopeGuardImpl : public ScopeGuardImplBase {
 public:
-    ScopeGuardImpl(const Func &func, Arg &arg) : func_(func), arg_(arg) {}
+    ScopeGuardImpl(const Func& func, Arg& arg)
+        : func_(func)
+        , arg_(arg)
+    {
+    }
     ~ScopeGuardImpl()
     {
         if (!commit_)
@@ -87,12 +99,12 @@ public:
     }
 
 private:
-    const Func &func_;
-    Arg &arg_;
+    const Func& func_;
+    Arg& arg_;
 };
 
 template <typename Func, typename Arg>
-ScopeGuardImpl<Func, Arg> MakeGuard(const Func &func, Arg &arg)
+ScopeGuardImpl<Func, Arg> MakeGuard(const Func& func, Arg& arg)
 {
     return ScopeGuardImpl<Func, Arg>(func, arg);
 }
@@ -101,15 +113,12 @@ int main()
 {
     Storage S;
     Index I;
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
-        const ScopeGuardImplBase &SG = MakeGuard(undo, S);
+        const ScopeGuardImplBase& SG = MakeGuard(undo, S);
         I.insert(42, FAIL_THROW);
         SG.commit(); // This is why commit_ is mutable
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     if (S.get() != I.get())

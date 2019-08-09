@@ -4,19 +4,19 @@
 
 // ---------------------------------
 // Generic visitor base
-template <typename ... Types>
+template <typename... Types>
 class Visitor;
 
 template <typename T>
 class Visitor<T> {
-    public:
+public:
     virtual void visit(T* t) = 0;
 };
 
-template <typename T, typename ... Types>
-class Visitor<T, Types ...> : public Visitor<Types ...> {
-    public:
-    using Visitor<Types ...>::visit;
+template <typename T, typename... Types>
+class Visitor<T, Types...> : public Visitor<Types...> {
+public:
+    using Visitor<Types...>::visit;
     virtual void visit(T* t) = 0;
 };
 //
@@ -25,21 +25,26 @@ class Visitor<T, Types ...> : public Visitor<Types ...> {
 using PetVisitor = Visitor<class Cat, class Dog>;
 
 class Pet {
-    public:
+public:
     virtual ~Pet() {}
-    Pet(const std::string& color) : color_(color) {}
+    Pet(const std::string& color)
+        : color_(color)
+    {
+    }
     const std::string& color() const { return color_; }
     virtual void accept(PetVisitor& v) = 0;
-    private:
+
+private:
     std::string color_;
 };
 
 template <typename Derived>
 class Visitable : public Pet {
-    public:
+public:
     using Pet::Pet;
-    void accept(PetVisitor& v) override {
-        v.visit(static_cast<Derived*>(this)); 
+    void accept(PetVisitor& v) override
+    {
+        v.visit(static_cast<Derived*>(this));
     }
 };
 
@@ -52,18 +57,19 @@ class Dog : public Visitable<Dog> {
 };
 
 class FeedingVisitor : public PetVisitor {
-    public:
+public:
     void visit(Cat* c) override { std::cout << "Feed tuna to the " << c->color() << " cat" << std::endl; }
     void visit(Dog* d) override { std::cout << "Feed steak to the " << d->color() << " dog" << std::endl; }
 };
 
 class PlayingVisitor : public PetVisitor {
-    public:
+public:
     void visit(Cat* c) override { std::cout << "Play with feather with the " << c->color() << " cat" << std::endl; }
     void visit(Dog* d) override { std::cout << "Play fetch with the " << d->color() << " dog" << std::endl; }
 };
 
-int main() {
+int main()
+{
     std::unique_ptr<Pet> c(new Cat("orange"));
     std::unique_ptr<Pet> d(new Dog("brown"));
 

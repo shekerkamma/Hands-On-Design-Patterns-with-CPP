@@ -1,7 +1,7 @@
 #include <iostream>
 #include <typeinfo>
-#include <vector>
 #include <utility>
+#include <vector>
 
 template <typename T>
 T increment(T x)
@@ -13,8 +13,7 @@ template <typename T>
 T sum(T from, T to, T step)
 {
     T res = from;
-    while ((from += step) < to)
-    {
+    while ((from += step) < to) {
         res += from;
     }
     return res;
@@ -39,13 +38,13 @@ T Max(T x, T y)
 }
 
 template <typename T>
-T decrement(T *p)
+T decrement(T* p)
 {
     return --(*p);
 }
 
 template <typename T>
-T first(const std::vector<T> &v)
+T first(const std::vector<T>& v)
 {
     return v[0];
 }
@@ -58,13 +57,13 @@ T first(const std::vector<T> &v)
 
 // Easier.
 template <typename U, typename V>
-auto swap12(const std::pair<U, V> &x)
+auto swap12(const std::pair<U, V>& x)
 {
     return std::make_pair(x.second, x.first);
 }
 
 template <typename T>
-auto swap12(const T &x)
+auto swap12(const T& x)
 {
     return std::make_pair(x.second, x.first);
 }
@@ -90,7 +89,7 @@ double do_something<double>(double x)
 // }
 
 template <typename T>
-void whatami(T *x)
+void whatami(T* x)
 {
     std::cout << x << " is pointer" << std::endl;
 }
@@ -99,7 +98,7 @@ void whatami(T *x)
 // may bind to anything. Such unusually flexible references deserve their own name.
 // Scott Meyer calls them universal references.
 template <typename T>
-void whatami(T &&x)
+void whatami(T&& x)
 {
     std::cout << "Something weird" << std::endl;
 }
@@ -119,10 +118,10 @@ void whatami(...)
     std::cout << "It's something or somethings" << std::endl;
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
     {
-        char c[]{"This is a string."};
+        char c[] { "This is a string." };
 
         std::cout << increment(5) << std::endl;
         std::cout << increment(5.2) << std::endl;
@@ -174,7 +173,7 @@ int main(int argc, char const *argv[])
     }
 
     {
-        std::vector<int> v{11, 25, 67};
+        std::vector<int> v { 11, 25, 67 };
         std::cout << first(v) << std::endl; // T is int, returns 11
 
         auto [first, second] = swap12(std::make_pair(7, 4.2)); // pair of 4.2, 7
@@ -184,7 +183,7 @@ int main(int argc, char const *argv[])
     {
         std::cout << "------------------" << std::endl;
 
-        std::cout << do_something(3) << std::endl;   // 4
+        std::cout << do_something(3) << std::endl; // 4
         std::cout << do_something(3.0) << std::endl; // 1.5
     }
 
@@ -192,20 +191,19 @@ int main(int argc, char const *argv[])
         std::cout << "------------------" << std::endl;
 
         whatami(5L); // 5 is long
-        whatami(5);  // 5 is int
+        whatami(5); // 5 is int
         // whatami(5.0); // Compilation error
         int i = 5;
-        whatami(i);  // 5 is int
+        whatami(i); // 5 is int
         whatami(&i); // 0x???? is a pointer
 
-        class C
-        {
+        class C {
             // .....
         };
 
         C c;
         whatami(&c); // 0x???? is a pointer
-        whatami(c);  // Something weird
+        whatami(c); // Something weird
     }
 
     {

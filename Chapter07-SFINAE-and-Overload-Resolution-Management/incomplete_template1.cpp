@@ -1,9 +1,11 @@
 #include <iostream>
 
-class Base
-{
+class Base {
 public:
-    Base() : i_() {}
+    Base()
+        : i_()
+    {
+    }
 
     virtual void increment(long v) { i_ += v; }
 
@@ -12,10 +14,13 @@ public:
 };
 
 template <typename T>
-class Derived : public T
-{
+class Derived : public T {
 public:
-    Derived() : T(), j_() {}
+    Derived()
+        : T()
+        , j_()
+    {
+    }
 
     void increment(long v)
     {

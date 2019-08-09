@@ -1,18 +1,20 @@
 #include <exception>
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0), finalized_(false) {}
+    Storage()
+        : i_(0)
+        , finalized_(false)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -38,10 +40,12 @@ private:
 };
 
 // Demo memory index, does nothing useful but may throw exception.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -64,23 +68,30 @@ private:
 };
 
 template <typename Func, bool on_success, bool on_failure>
-class ScopeGuard
-{
+class ScopeGuard {
 public:
-    ScopeGuard(Func &&func) : func_(func) {}
-    ScopeGuard(const Func &func) : func_(func) {}
+    ScopeGuard(Func&& func)
+        : func_(func)
+    {
+    }
+    ScopeGuard(const Func& func)
+        : func_(func)
+    {
+    }
     ~ScopeGuard()
     {
-        if ((on_success && !std::uncaught_exception()) ||
-            (on_failure && std::uncaught_exception()))
+        if ((on_success && !std::uncaught_exception()) || (on_failure && std::uncaught_exception()))
             func_();
     }
-    ScopeGuard(ScopeGuard &&other) : func_(other.func_) {}
+    ScopeGuard(ScopeGuard&& other)
+        : func_(other.func_)
+    {
+    }
 
 private:
     Func func_;
     ScopeGuard() = delete;
-    ScopeGuard &operator=(const ScopeGuard &) = delete;
+    ScopeGuard& operator=(const ScopeGuard&) = delete;
 };
 
 #define CONCAT2(x, y) x##y
@@ -91,33 +102,30 @@ private:
 #define ANON_VAR(x) CONCAT(x, __LINE__)
 #endif
 
-struct ScopeGuardOnExit
-{
+struct ScopeGuardOnExit {
 };
 template <typename Func>
-auto operator+(ScopeGuardOnExit, Func &&func)
+auto operator+(ScopeGuardOnExit, Func&& func)
 {
     return ScopeGuard<Func, true, true>(std::forward<Func>(func));
 }
 #define ON_SCOPE_EXIT \
     auto ANON_VAR(SCOPE_EXIT_STATE) = ScopeGuardOnExit() + [&]()
 
-struct ScopeGuardOnSuccess
-{
+struct ScopeGuardOnSuccess {
 };
 template <typename Func>
-auto operator+(ScopeGuardOnSuccess, Func &&func)
+auto operator+(ScopeGuardOnSuccess, Func&& func)
 {
     return ScopeGuard<Func, true, false>(std::forward<Func>(func));
 }
 #define ON_SCOPE_SUCCESS \
     auto ANON_VAR(SCOPE_EXIT_STATE) = ScopeGuardOnSuccess() + [&]()
 
-struct ScopeGuardOnFailure
-{
+struct ScopeGuardOnFailure {
 };
 template <typename Func>
-auto operator+(ScopeGuardOnFailure, Func &&func)
+auto operator+(ScopeGuardOnFailure, Func&& func)
 {
     return ScopeGuard<Func, false, true>(std::forward<Func>(func));
 }
@@ -128,15 +136,12 @@ int main()
 {
     Storage S;
     Index I;
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
         ON_SCOPE_EXIT { S.finalize(); };
         ON_SCOPE_FAILURE { S.undo(); };
         I.insert(42, FAIL_THROW);
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     {

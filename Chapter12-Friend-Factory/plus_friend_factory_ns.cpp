@@ -1,16 +1,17 @@
 #include <iostream>
 
-namespace NS
-{
+namespace NS {
 template <typename T>
-class C
-{
+class C {
     T x_;
 
 public:
-    C(T x) : x_(x) {}
-    friend C operator+(const C &lhs, const C &rhs) { return C(lhs.x_ + rhs.x_); }
-    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    C(T x)
+        : x_(x)
+    {
+    }
+    friend C operator+(const C& lhs, const C& rhs) { return C(lhs.x_ + rhs.x_); }
+    friend std::ostream& operator<<(std::ostream& out, const C& c)
     {
         out << c.x_;
         return out;

@@ -4,17 +4,24 @@
 #include "benchmark/benchmark.h"
 
 #define REPEAT2(x) x x
-#define REPEAT4(x) REPEAT2(x) REPEAT2(x)
-#define REPEAT8(x) REPEAT4(x) REPEAT4(x)
-#define REPEAT16(x) REPEAT8(x) REPEAT8(x)
-#define REPEAT32(x) REPEAT16(x) REPEAT16(x)
+#define REPEAT4(x) \
+    REPEAT2(x)     \
+    REPEAT2(x)
+#define REPEAT8(x) \
+    REPEAT4(x)     \
+    REPEAT4(x)
+#define REPEAT16(x) \
+    REPEAT8(x)      \
+    REPEAT8(x)
+#define REPEAT32(x) \
+    REPEAT16(x)     \
+    REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
-class Positional
-{
+class Positional {
 public:
     Positional(bool a = false, bool b = false, bool c = false, bool d = false,
-               bool e = false, bool f = false, bool g = false, bool h = false);
+        bool e = false, bool f = false, bool g = false, bool h = false);
 
     operator bool() const { return a_; }
 
@@ -29,50 +36,57 @@ private:
     const bool h_;
 };
 
-class Named
-{
+class Named {
 public:
-    class Options
-    {
+    class Options {
     public:
-        Options() : a_(false), b_(false), c_(false), d_(false),
-                    e_(false), f_(false), g_(false), h_(false) {}
-        Options &SetA(bool a)
+        Options()
+            : a_(false)
+            , b_(false)
+            , c_(false)
+            , d_(false)
+            , e_(false)
+            , f_(false)
+            , g_(false)
+            , h_(false)
+        {
+        }
+        Options& SetA(bool a)
         {
             a_ = a;
             return *this;
         }
-        Options &SetB(bool b)
+        Options& SetB(bool b)
         {
             b_ = b;
             return *this;
         }
-        Options &SetC(bool c)
+        Options& SetC(bool c)
         {
             c_ = c;
             return *this;
         }
-        Options &SetD(bool d)
+        Options& SetD(bool d)
         {
             d_ = d;
             return *this;
         }
-        Options &SetE(bool e)
+        Options& SetE(bool e)
         {
             e_ = e;
             return *this;
         }
-        Options &SetF(bool f)
+        Options& SetF(bool f)
         {
             f_ = f;
             return *this;
         }
-        Options &SetG(bool g)
+        Options& SetG(bool g)
         {
             g_ = g;
             return *this;
         }
-        Options &SetH(bool h)
+        Options& SetH(bool h)
         {
             h_ = h;
             return *this;
@@ -98,13 +112,20 @@ private:
     const Options options_;
 };
 
-class Aggregate
-{
+class Aggregate {
 public:
-    struct Options
-    {
-        Options() : a(false), b(false), c(false), d(false),
-                    e(false), f(false), g(false), h(false) {}
+    struct Options {
+        Options()
+            : a(false)
+            , b(false)
+            , c(false)
+            , d(false)
+            , e(false)
+            , f(false)
+            , g(false)
+            , h(false)
+        {
+        }
         bool a;
         bool b;
         bool c;
@@ -115,7 +136,7 @@ public:
         bool h;
     };
 
-    Aggregate(const Options &options);
+    Aggregate(const Options& options);
 
     operator bool() const { return options_.a; }
 
@@ -123,28 +144,25 @@ private:
     const Options options_;
 };
 
-void BM_positional_const(benchmark::State &state)
+void BM_positional_const(benchmark::State& state)
 {
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT(benchmark::DoNotOptimize(bool(Positional(false, false, false, false, false, false, false, true)));)
     }
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_named_const(benchmark::State &state)
+void BM_named_const(benchmark::State& state)
 {
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT(benchmark::DoNotOptimize(bool(Named(Named::Options().SetH(true))));)
     }
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_aggregate_const(benchmark::State &state)
+void BM_aggregate_const(benchmark::State& state)
 {
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT({
             Aggregate::Options options;
             options.h = true;
@@ -154,15 +172,14 @@ void BM_aggregate_const(benchmark::State &state)
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_positional_var(benchmark::State &state)
+void BM_positional_var(benchmark::State& state)
 {
     const size_t N = 1000;
     std::vector<int> v(N);
     for (size_t i = 0; i < N; ++i)
         v[i] = rand();
     size_t i = 0;
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT({
             benchmark::DoNotOptimize(bool(Positional(false, false, false, false, false, false, false, v[i++])));
             if (i == N)
@@ -172,15 +189,14 @@ void BM_positional_var(benchmark::State &state)
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_named_var(benchmark::State &state)
+void BM_named_var(benchmark::State& state)
 {
     const size_t N = 1000;
     std::vector<int> v(N);
     for (size_t i = 0; i < N; ++i)
         v[i] = rand();
     size_t i = 0;
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT({
             benchmark::DoNotOptimize(bool(Named(Named::Options().SetH(v[i++]))));
             if (i == N)
@@ -190,15 +206,14 @@ void BM_named_var(benchmark::State &state)
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_aggregate_var(benchmark::State &state)
+void BM_aggregate_var(benchmark::State& state)
 {
     const size_t N = 1000;
     std::vector<int> v(N);
     for (size_t i = 0; i < N; ++i)
         v[i] = rand();
     size_t i = 0;
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT({
             Aggregate::Options options;
             options.h = v[i++];

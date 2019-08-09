@@ -1,17 +1,18 @@
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0) {}
+    Storage()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -32,13 +33,15 @@ private:
     int i_;
     int i1_;
 };
-void undo(Storage &S) { S.undo(); }
+void undo(Storage& S) { S.undo(); }
 
 // Demo memory index, does nothing useful but may throw exception.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -60,41 +63,55 @@ private:
     int i1_;
 };
 
-class ScopeGuardImplBase
-{
+class ScopeGuardImplBase {
 public:
-    ScopeGuardImplBase() : commit_(false) {}
+    ScopeGuardImplBase()
+        : commit_(false)
+    {
+    }
     void commit() const noexcept { commit_ = true; }
 
 protected:
-    ScopeGuardImplBase(ScopeGuardImplBase &&other) : commit_(other.commit_) { other.commit(); }
+    ScopeGuardImplBase(ScopeGuardImplBase&& other)
+        : commit_(other.commit_)
+    {
+        other.commit();
+    }
     ~ScopeGuardImplBase() {}
     mutable bool commit_;
 
 private:
-    ScopeGuardImplBase &operator=(const ScopeGuardImplBase &) = delete;
+    ScopeGuardImplBase& operator=(const ScopeGuardImplBase&) = delete;
 };
-typedef const ScopeGuardImplBase &ScopeGuard;
+typedef const ScopeGuardImplBase& ScopeGuard;
 
 template <typename Func, typename Arg>
-class ScopeGuardImpl : public ScopeGuardImplBase
-{
+class ScopeGuardImpl : public ScopeGuardImplBase {
 public:
-    ScopeGuardImpl(const Func &func, Arg &arg) : func_(func), arg_(arg) {}
+    ScopeGuardImpl(const Func& func, Arg& arg)
+        : func_(func)
+        , arg_(arg)
+    {
+    }
     ~ScopeGuardImpl()
     {
         if (!commit_)
             func_(arg_);
     }
-    ScopeGuardImpl(ScopeGuardImpl &&other) : ScopeGuardImplBase(std::move(other)), func_(other.func_), arg_(other.arg_) {}
+    ScopeGuardImpl(ScopeGuardImpl&& other)
+        : ScopeGuardImplBase(std::move(other))
+        , func_(other.func_)
+        , arg_(other.arg_)
+    {
+    }
 
 private:
-    const Func &func_;
-    Arg &arg_;
+    const Func& func_;
+    Arg& arg_;
 };
 
 template <typename Func, typename Arg>
-auto MakeGuard(const Func &func, Arg &arg)
+auto MakeGuard(const Func& func, Arg& arg)
 {
     return ScopeGuardImpl<Func, Arg>(func, arg);
 }
@@ -103,15 +120,12 @@ int main()
 {
     Storage S;
     Index I;
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
         ScopeGuard SG = MakeGuard(undo, S);
         I.insert(42, FAIL_THROW);
         SG.commit();
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     if (S.get() != I.get())

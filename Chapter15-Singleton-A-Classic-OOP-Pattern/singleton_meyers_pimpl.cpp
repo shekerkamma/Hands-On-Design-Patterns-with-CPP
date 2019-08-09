@@ -1,59 +1,66 @@
-#include <stdlib.h>
 #include <iostream>
+#include <stdlib.h>
 
 #include "benchmark/benchmark.h"
 
 #define REPEAT2(x) x x
-#define REPEAT4(x) REPEAT2(x) REPEAT2(x)
-#define REPEAT8(x) REPEAT4(x) REPEAT4(x)
-#define REPEAT16(x) REPEAT8(x) REPEAT8(x)
-#define REPEAT32(x) REPEAT16(x) REPEAT16(x)
+#define REPEAT4(x) \
+    REPEAT2(x)     \
+    REPEAT2(x)
+#define REPEAT8(x) \
+    REPEAT4(x)     \
+    REPEAT4(x)
+#define REPEAT16(x) \
+    REPEAT8(x)      \
+    REPEAT8(x)
+#define REPEAT32(x) \
+    REPEAT16(x)     \
+    REPEAT16(x)
 #define REPEAT(x) REPEAT32(x)
 
 // -----------------------------------------------
 // This would go into a separate header file:
 struct SingletonImpl; // Forward declaration:
 
-class Singleton
-{
+class Singleton {
 public:
-    int &get();
+    int& get();
 
 private:
-    static SingletonImpl &impl();
+    static SingletonImpl& impl();
 };
 // -----------------------------------------------
 // This would go into the cpp file:
-struct SingletonImpl
-{
-    SingletonImpl() : value_(0) {}
+struct SingletonImpl {
+    SingletonImpl()
+        : value_(0)
+    {
+    }
     int value_;
 };
 
-int &Singleton::get() { return impl().value_; }
+int& Singleton::get() { return impl().value_; }
 
-SingletonImpl &Singleton::impl()
+SingletonImpl& Singleton::impl()
 {
     static SingletonImpl inst;
     return inst;
 }
 // -----------------------------------------------
 
-void BM_singleton(benchmark::State &state)
+void BM_singleton(benchmark::State& state)
 {
     //Singleton S; // Does not compile - cannot create another one
     Singleton S;
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT(benchmark::DoNotOptimize(++S.get());)
     }
     state.SetItemsProcessed(32 * state.iterations());
 }
 
-void BM_singletons(benchmark::State &state)
+void BM_singletons(benchmark::State& state)
 {
-    for (auto _ : state)
-    {
+    for (auto _ : state) {
         REPEAT(benchmark::DoNotOptimize(++Singleton().get());)
     }
     state.SetItemsProcessed(32 * state.iterations());

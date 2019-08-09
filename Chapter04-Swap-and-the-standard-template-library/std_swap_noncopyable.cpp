@@ -1,12 +1,14 @@
-#include <utility>
 #include <iostream>
+#include <utility>
 
-class A
-{
+class A {
 public:
-    explicit A(int i) : i_(i) {}
-    A(const A &rhs) = delete;
-    A &operator=(const A &rhs) = delete;
+    explicit A(int i)
+        : i_(i)
+    {
+    }
+    A(const A& rhs) = delete;
+    A& operator=(const A& rhs) = delete;
     int i_;
 };
 

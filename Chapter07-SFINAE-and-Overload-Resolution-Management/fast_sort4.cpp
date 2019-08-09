@@ -1,16 +1,14 @@
-#include <iostream>
 #include <algorithm>
-#include <vector>
+#include <iostream>
 #include <list>
+#include <vector>
 
 // ---------------------------------------------------------------------------
-struct yes
-{
+struct yes {
     char c;
 };
 
-struct no
-{
+struct no {
     char c;
     yes c1;
 };
@@ -33,9 +31,8 @@ template <typename T, bool have_sort, bool have_range>
 struct fast_sort_helper;
 
 template <typename T>
-struct fast_sort_helper<T, true, true>
-{
-    static void fast_sort(T &x)
+struct fast_sort_helper<T, true, true> {
+    static void fast_sort(T& x)
     {
         std::cout << "Sorting with T::sort, ignoring std::sort" << std::endl;
         x.sort();
@@ -43,9 +40,8 @@ struct fast_sort_helper<T, true, true>
 };
 
 template <typename T>
-struct fast_sort_helper<T, true, false>
-{
-    static void fast_sort(T &x)
+struct fast_sort_helper<T, true, false> {
+    static void fast_sort(T& x)
     {
         std::cout << "Sorting with T::sort" << std::endl;
         x.sort();
@@ -53,9 +49,8 @@ struct fast_sort_helper<T, true, false>
 };
 
 template <typename T>
-struct fast_sort_helper<T, false, true>
-{
-    static void fast_sort(T &x)
+struct fast_sort_helper<T, false, true> {
+    static void fast_sort(T& x)
     {
         std::cout << "Sorting with std::sort" << std::endl;
         std::sort(x.begin(), x.end());
@@ -63,58 +58,52 @@ struct fast_sort_helper<T, false, true>
 };
 
 template <typename T>
-struct fast_sort_helper<T, false, false>
-{
-    static void fast_sort(T &x)
+struct fast_sort_helper<T, false, false> {
+    static void fast_sort(T& x)
     {
         std::cout << "No sort available" << std::endl;
     }
 };
 
 template <typename T>
-void fast_sort(T &x)
+void fast_sort(T& x)
 {
     fast_sort_helper<T, sizeof(test_have_sort<T>(NULL)) == sizeof(yes), sizeof(test_have_range<T>(NULL, NULL)) == sizeof(yes)>::fast_sort(x);
 }
 
 // ---------------------------------------------------------------------------
-class A
-{
+class A {
 public:
     void sort() {}
 };
 
-class A1
-{
+class A1 {
 public:
     void sort() {}
     void sort(int i) {}
 };
 
-class B
-{
+class B {
 public:
-    typedef int *iterator;
+    typedef int* iterator;
     iterator begin() { return i; }
     iterator end() { return i + 10; }
     int i[10];
 };
 
-class AB
-{
+class AB {
 public:
-    typedef int *iterator;
+    typedef int* iterator;
     void sort() {}
     iterator begin() { return i; }
     iterator end() { return i + 10; }
     int i[10];
 };
 
-class B1
-{
+class B1 {
 public:
-    typedef int *iterator;
-    typedef const int *const_iterator;
+    typedef int* iterator;
+    typedef const int* const_iterator;
     iterator begin() { return i; }
     const_iterator begin() const { return i; }
     iterator end() { return i + 10; }
@@ -122,8 +111,7 @@ public:
     int i[10];
 };
 
-class C
-{
+class C {
 public:
     void f() {}
 };

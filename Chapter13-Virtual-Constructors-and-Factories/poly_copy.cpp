@@ -1,20 +1,18 @@
 #include <iostream>
 #include <memory>
 
-class Base
-{
+class Base {
 public:
-    virtual Base *clone() const = 0;
+    virtual Base* clone() const = 0;
 };
 
-class Derived : public Base
-{
+class Derived : public Base {
 public:
-    Derived *clone() const { return new Derived(*this); }
+    Derived* clone() const { return new Derived(*this); }
 };
 
 int main()
 {
-    Base *b0 = new Derived;
-    Base *b1 = b0->clone();
+    Base* b0 = new Derived;
+    Base* b1 = b0->clone();
 }

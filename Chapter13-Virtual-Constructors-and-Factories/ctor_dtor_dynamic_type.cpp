@@ -1,22 +1,19 @@
 #include <iostream>
 #include <typeinfo>
 
-class A
-{
+class A {
 public:
     A() { std::cout << "A::A(): " << typeid(*this).name() << std::endl; }
     virtual ~A() { std::cout << "A::~A(): " << typeid(*this).name() << std::endl; }
 };
 
-class B : public A
-{
+class B : public A {
 public:
     B() { std::cout << "B::B(): " << typeid(*this).name() << std::endl; }
     ~B() { std::cout << "B::~B(): " << typeid(*this).name() << std::endl; }
 };
 
-class C : public B
-{
+class C : public B {
 public:
     C() { std::cout << "C::C(): " << typeid(*this).name() << std::endl; }
     ~C() { std::cout << "C::~C(): " << typeid(*this).name() << std::endl; }

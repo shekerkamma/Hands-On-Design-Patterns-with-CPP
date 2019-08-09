@@ -3,15 +3,13 @@
 
 #include <iostream>
 
-class Base
-{
+class Base {
 public:
     virtual void f() { std::cout << "Base::f()" << std::endl; }
     void g() { f(); }
 };
 
-class Derived : private Base
-{
+class Derived : private Base {
     // private:
     void f() override { std::cout << "Derived::f()" << std::endl; }
 
@@ -20,7 +18,7 @@ public:
     // void f() override { std::cout << "Derived::f()" << std::endl; }
 };
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
     Derived d;
     d.h(); // Prints "Derived::f()"

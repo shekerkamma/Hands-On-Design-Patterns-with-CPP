@@ -3,74 +3,73 @@
 
 // ---------------------------------------------------------------------------
 // Default constructor and destructor.
-struct A
-{
+struct A {
 };
 
 // ---------------------------------------------------------------------------
 // Default constructor and destructor, assignment operator, addition and subtraction.
-struct B
-{
+struct B {
     int i;
-    B &operator=(int j)
+    B& operator=(int j)
     {
         i = j;
         return *this;
     }
 };
 
-B operator+(const B &x, const B &y)
+B operator+(const B& x, const B& y)
 {
-    B t = {x.i + y.i};
+    B t = { x.i + y.i };
     return t;
 }
 
-B operator+(const B &x, int y)
+B operator+(const B& x, int y)
 {
-    B t = {x.i + y};
+    B t = { x.i + y };
     return t;
 }
 
-B operator+(int x, const B &y)
+B operator+(int x, const B& y)
 {
-    B t = {x + y.i};
+    B t = { x + y.i };
     return t;
 }
 
-B operator-(const B &x, const B &y)
+B operator-(const B& x, const B& y)
 {
-    B t = {x.i - y.i};
+    B t = { x.i - y.i };
     return t;
 }
 
-B operator-(const B &x, int y)
+B operator-(const B& x, int y)
 {
-    B t = {x.i - y};
+    B t = { x.i - y };
     return t;
 }
 
-B operator-(int x, const B &y)
+B operator-(int x, const B& y)
 {
-    B t = {x - y.i};
+    B t = { x - y.i };
     return t;
 }
 
 // ---------------------------------------------------------------------------
 // No default constructor, destructor, cast to integer.
-struct C
-{
+struct C {
     int i;
-    C(const A &) {}
+    C(const A&) {}
     operator int() const { return i; }
 };
 
 // ---------------------------------------------------------------------------
 // Default constructor, no destructor.
-class D
-{
+class D {
 public:
     int i;
-    D() : i(0) {}
+    D()
+        : i(0)
+    {
+    }
 
 private:
     ~D() {}
@@ -78,63 +77,68 @@ private:
 
 // ---------------------------------------------------------------------------
 // Not copyable.
-class E
-{
+class E {
 public:
     int i;
-    E() : i(0) {}
+    E()
+        : i(0)
+    {
+    }
 
 private:
-    E(const E &) = delete;
-    E &operator=(const E &) = delete;
+    E(const E&) = delete;
+    E& operator=(const E&) = delete;
 };
 
 // ---------------------------------------------------------------------------
 // Smart pointer.
-class Ptr
-{
+class Ptr {
 public:
-    explicit Ptr(int *p = NULL) : p_(p) {}
+    explicit Ptr(int* p = NULL)
+        : p_(p)
+    {
+    }
     ~Ptr() { delete p_; }
-    Ptr &operator=(int *p)
+    Ptr& operator=(int* p)
     {
         delete p_;
         p_ = p;
         return *this;
     }
-    int *operator->() { return p_; }
-    const int *operator->() const { return p_; }
-    int &operator*() { return *p_; }
-    const int &operator*() const { return *p_; }
+    int* operator->() { return p_; }
+    const int* operator->() const { return p_; }
+    int& operator*() { return *p_; }
+    const int& operator*() const { return *p_; }
 
 private:
-    int *p_;
+    int* p_;
 };
 
 // ---------------------------------------------------------------------------
 template <typename T>
-class SmartPtr
-{
+class SmartPtr {
 public:
-    explicit SmartPtr(T *p = NULL) : p_(p) {}
+    explicit SmartPtr(T* p = NULL)
+        : p_(p)
+    {
+    }
     ~SmartPtr()
     {
         if (p_)
             delete p_;
     }
-    T *operator->() { return p_; }
-    const T *operator->() const { return p_; }
-    T &operator*() { return *p_; }
-    const T &operator*() const { return *p_; }
+    T* operator->() { return p_; }
+    const T* operator->() const { return p_; }
+    T& operator*() { return *p_; }
+    const T& operator*() const { return *p_; }
 
 private:
-    T *p_;
+    T* p_;
 };
 
 // ---------------------------------------------------------------------------
 template <typename Lambda>
-struct is_valid_helper
-{
+struct is_valid_helper {
     template <typename LambdaArgs>
     // std::declval<Lambda>() -> create the lambda from the type of the lambda (Lambda)
     // then call the created lambda with arguments created from its type LambdaArgs:
@@ -151,7 +155,7 @@ struct is_valid_helper
     }
 
     template <typename LambdaArgs>
-    constexpr auto operator()(const LambdaArgs &)
+    constexpr auto operator()(const LambdaArgs&)
     {
         return this->test<LambdaArgs>(0);
     }
@@ -159,22 +163,22 @@ struct is_valid_helper
 
 // ---------------------------------------------------------------------------
 template <typename Lambda>
-constexpr auto is_valid(const Lambda &)
+constexpr auto is_valid(const Lambda&)
 {
     return is_valid_helper<Lambda>();
 }
 
 // ---------------------------------------------------------------------------
-auto is_default_constructible = is_valid([](auto &&x) -> decltype(new typename std::remove_reference<decltype(x)>::type) {});
-auto is_copyable = is_valid([](auto &&x) -> decltype(new typename std::remove_reference<decltype(x)>::type(x)) {});
-auto is_destructible = is_valid([](auto &&x) -> decltype(delete (&x)) {});
-auto is_assignable = is_valid([](auto &&x) -> decltype(x = x) {});
-auto is_assignable0 = is_valid([](auto &&x) -> decltype(x = 0) {});
-auto is_addable = is_valid([](auto &&x) -> decltype(x + x) {});
-auto is_pointer = is_valid([](auto &&x) -> decltype(*x) {});
+auto is_default_constructible = is_valid([](auto&& x) -> decltype(new typename std::remove_reference<decltype(x)>::type) {});
+auto is_copyable = is_valid([](auto&& x) -> decltype(new typename std::remove_reference<decltype(x)>::type(x)) {});
+auto is_destructible = is_valid([](auto&& x) -> decltype(delete (&x)) {});
+auto is_assignable = is_valid([](auto&& x) -> decltype(x = x) {});
+auto is_assignable0 = is_valid([](auto&& x) -> decltype(x = 0) {});
+auto is_addable = is_valid([](auto&& x) -> decltype(x + x) {});
+auto is_pointer = is_valid([](auto&& x) -> decltype(*x) {});
 
 // ---------------------------------------------------------------------------
-void check_default_constructible(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_default_constructible(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_default_constructible(i))::value, "Feature check failed");
     static_assert(decltype(is_default_constructible(x))::value, "Feature check failed");
@@ -188,7 +192,7 @@ void check_default_constructible(int i, double x, int *p, const A &a, const B &b
     static_assert(decltype(is_default_constructible(iptr))::value, "Feature check failed");
 }
 
-void check_copyable(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_copyable(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_copyable(i))::value, "Feature check failed");
     static_assert(decltype(is_copyable(x))::value, "Feature check failed");
@@ -202,7 +206,7 @@ void check_copyable(int i, double x, int *p, const A &a, const B &b, const C &c,
     static_assert(decltype(is_copyable(iptr))::value, "Feature check failed");
 }
 
-void check_destructible(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_destructible(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_destructible(i))::value, "Feature check failed");
     static_assert(decltype(is_destructible(x))::value, "Feature check failed");
@@ -216,7 +220,7 @@ void check_destructible(int i, double x, int *p, const A &a, const B &b, const C
     static_assert(decltype(is_destructible(iptr))::value, "Feature check failed");
 }
 
-void check_assignable(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_assignable(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_assignable(i))::value, "Feature check failed");
     static_assert(decltype(is_assignable(x))::value, "Feature check failed");
@@ -230,7 +234,7 @@ void check_assignable(int i, double x, int *p, const A &a, const B &b, const C &
     static_assert(decltype(is_assignable(iptr))::value, "Feature check failed");
 }
 
-void check_assignable0(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_assignable0(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_assignable0(i))::value, "Feature check failed");
     static_assert(decltype(is_assignable0(x))::value, "Feature check failed");
@@ -244,7 +248,7 @@ void check_assignable0(int i, double x, int *p, const A &a, const B &b, const C 
     static_assert(!decltype(is_assignable0(iptr))::value, "Feature check failed");
 }
 
-void check_addable(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_addable(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(decltype(is_addable(i))::value, "Feature check failed");
     static_assert(decltype(is_addable(x))::value, "Feature check failed");
@@ -258,7 +262,7 @@ void check_addable(int i, double x, int *p, const A &a, const B &b, const C &c, 
     static_assert(!decltype(is_addable(iptr))::value, "Feature check failed");
 }
 
-void check_pointer(int i, double x, int *p, const A &a, const B &b, const C &c, const D &d, const E &e, const Ptr &ptr, const SmartPtr<int> &iptr)
+void check_pointer(int i, double x, int* p, const A& a, const B& b, const C& c, const D& d, const E& e, const Ptr& ptr, const SmartPtr<int>& iptr)
 {
     static_assert(!decltype(is_pointer(i))::value, "Feature check failed");
     static_assert(!decltype(is_pointer(x))::value, "Feature check failed");

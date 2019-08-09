@@ -1,21 +1,22 @@
 #include <iostream>
 
 template <typename D>
-class B
-{
+class B {
 public:
-    friend bool operator!=(const D &lhs, const D &rhs) { return !(lhs == rhs); }
+    friend bool operator!=(const D& lhs, const D& rhs) { return !(lhs == rhs); }
 };
 
 template <typename T>
-class C : public B<C<T>>
-{
+class C : public B<C<T>> {
     T x_;
 
 public:
-    C(T x) : x_(x) {}
-    friend bool operator==(const C &lhs, const C &rhs) { return lhs.x_ == rhs.x_; }
-    friend std::ostream &operator<<(std::ostream &out, const C &c)
+    C(T x)
+        : x_(x)
+    {
+    }
+    friend bool operator==(const C& lhs, const C& rhs) { return lhs.x_ == rhs.x_; }
+    friend std::ostream& operator<<(std::ostream& out, const C& c)
     {
         out << c.x_;
         return out;

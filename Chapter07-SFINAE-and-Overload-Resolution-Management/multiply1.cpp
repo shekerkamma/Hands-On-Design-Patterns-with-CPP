@@ -1,7 +1,7 @@
 #include <iostream>
 
 template <typename T>
-auto increase(const T &x, size_t n) -> decltype(T(x) *= n)
+auto increase(const T& x, size_t n) -> decltype(T(x) *= n)
 {
     T y(x);
     return y *= n;
@@ -16,15 +16,17 @@ auto increase(const T &x, size_t n) -> decltype(T(x) *= n)
 // }
 
 template <typename T>
-auto increase(const T &x, size_t n) -> decltype(x * n)
+auto increase(const T& x, size_t n) -> decltype(x * n)
 {
     return x * n;
 }
 
-class A
-{
+class A {
 public:
-    explicit A(int i) : i_(i) {}
+    explicit A(int i)
+        : i_(i)
+    {
+    }
     A operator*=(size_t n)
     {
         std::cout << "A*=n" << std::endl;
@@ -35,11 +37,13 @@ private:
     int i_;
 };
 
-class B
-{
+class B {
 public:
-    explicit B(int i) : i_(i) {}
-    friend B operator*(const B &lhs, size_t rhs)
+    explicit B(int i)
+        : i_(i)
+    {
+    }
+    friend B operator*(const B& lhs, size_t rhs)
     {
         std::cout << "B*n" << std::endl;
         return B(lhs.i_ * rhs);
@@ -49,16 +53,18 @@ private:
     int i_;
 };
 
-class AB
-{
+class AB {
 public:
-    explicit AB(int i) : i_(i) {}
+    explicit AB(int i)
+        : i_(i)
+    {
+    }
     AB operator*=(size_t n)
     {
         std::cout << "AB*=n" << std::endl;
         return AB(i_ * n);
     }
-    friend AB operator*(const AB &lhs, size_t rhs)
+    friend AB operator*(const AB& lhs, size_t rhs)
     {
         std::cout << "AB*n" << std::endl;
         return AB(lhs.i_ * rhs);

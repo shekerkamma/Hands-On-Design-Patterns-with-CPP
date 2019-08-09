@@ -1,28 +1,38 @@
 #include <iostream>
 
 // -----------------------------------------------------------------------------
-template <typename D> struct not_equal {
+template <typename D>
+struct not_equal {
     friend bool operator!=(const D& lhs, const D& rhs) { return !(lhs == rhs); }
 };
 
 // -----------------------------------------------------------------------------
 class C : public not_equal<C> {
     int i_;
-    public:
-    C(int i) : i_(i) {}
+
+public:
+    C(int i)
+        : i_(i)
+    {
+    }
     friend bool operator==(const C& lhs, const C& rhs) { return lhs.i_ == rhs.i_; }
 };
 
 // ---------------
 class D : public not_equal<D> {
     int i_;
-    public:
-    D(int i) : i_(i) {}
+
+public:
+    D(int i)
+        : i_(i)
+    {
+    }
     bool operator==(const D& rhs) const { return i_ == rhs.i_; }
 };
 
 // -----------------------------------------------------------------------------
-int main() {
+int main()
+{
     C c1(1);
     C c2(1);
     C c3(2);

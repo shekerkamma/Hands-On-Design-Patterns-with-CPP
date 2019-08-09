@@ -1,17 +1,18 @@
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0) {}
+    Storage()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -34,10 +35,12 @@ private:
 };
 
 // Demo memory index, does nothing useful but may throw exception.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         if (outcome == FAIL_THROW)
@@ -63,10 +66,13 @@ int main()
 {
     Storage S;
     Index I;
-    class StorageGuard
-    {
+    class StorageGuard {
     public:
-        StorageGuard(Storage &S) : S_(S), commit_(false) {}
+        StorageGuard(Storage& S)
+            : S_(S)
+            , commit_(false)
+        {
+        }
         ~StorageGuard()
         {
             if (!commit_)
@@ -75,20 +81,17 @@ int main()
         void commit() noexcept { commit_ = true; }
 
     private:
-        Storage &S_;
+        Storage& S_;
         bool commit_;
-        StorageGuard(const StorageGuard &) = delete;
-        StorageGuard &operator=(const StorageGuard &) = delete;
+        StorageGuard(const StorageGuard&) = delete;
+        StorageGuard& operator=(const StorageGuard&) = delete;
     };
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
         StorageGuard SG(S);
         I.insert(42, FAIL_THROW);
         SG.commit();
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     if (S.get() != I.get())

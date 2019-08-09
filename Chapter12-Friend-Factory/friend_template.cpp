@@ -1,31 +1,35 @@
 #include <iostream>
 
 template <typename T>
-class C
-{
+class C {
     T x_;
 
 public:
-    C(T x) : x_(x) {}
+    C(T x)
+        : x_(x)
+    {
+    }
     template <typename U>
-    friend std::ostream &operator<<(std::ostream &out, const C<U> &c);
+    friend std::ostream& operator<<(std::ostream& out, const C<U>& c);
 };
 template <typename U>
-std::ostream &operator<<(std::ostream &out, const C<U> &c)
+std::ostream& operator<<(std::ostream& out, const C<U>& c)
 {
     out << c.x_;
     return out;
 }
 
 template <typename T>
-class D
-{
+class D {
     T x_;
 
 public:
-    D(T x) : x_(x) {}
+    D(T x)
+        : x_(x)
+    {
+    }
     template <typename U>
-    friend std::ostream &operator<<(std::ostream &out, const D<U> &d)
+    friend std::ostream& operator<<(std::ostream& out, const D<U>& d)
     {
         out << d.x_;
         return out;

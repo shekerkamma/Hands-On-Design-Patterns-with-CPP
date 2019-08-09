@@ -1,17 +1,18 @@
 #include <iostream>
 
-enum Outcome
-{
+enum Outcome {
     SUCCESS,
     FAIL_RETURN,
     FAIL_THROW
 };
 
 // Demo disk storage, does nothing useful but may throw exception.
-class Storage
-{
+class Storage {
 public:
-    Storage() : i_(0) {}
+    Storage()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         // Throw exception
@@ -30,10 +31,12 @@ private:
 
 // Demo memory index, does nothing useful but may throw exception.
 // Identical to class Storage.
-class Index
-{
+class Index {
 public:
-    Index() : i_(0) {}
+    Index()
+        : i_(0)
+    {
+    }
     bool insert(int i, Outcome outcome)
     {
         // Throw exception
@@ -54,13 +57,10 @@ int main()
 {
     Storage S;
     Index I;
-    try
-    {
+    try {
         S.insert(42, SUCCESS);
         I.insert(42, FAIL_THROW);
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 
     if (S.get() != I.get())

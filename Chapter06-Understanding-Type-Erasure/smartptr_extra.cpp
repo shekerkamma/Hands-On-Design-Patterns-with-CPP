@@ -1,10 +1,9 @@
-#include <stdlib.h>
 #include <memory>
+#include <stdlib.h>
 
-struct deleter
-{
+struct deleter {
     template <typename T>
-    void operator()(T *p) { delete p; }
+    void operator()(T* p) { delete p; }
 };
 
 deleter d;
@@ -15,83 +14,84 @@ std::shared_ptr<int> get_shared_ptr()
 }
 
 template <typename T>
-struct deleter1
-{
-    void operator()(T *p) { delete p; }
+struct deleter1 {
+    void operator()(T* p) { delete p; }
 };
 
 template <typename T>
-class smartptr_te
-{
-    struct deleter_base
-    {
-        virtual void apply(void *) = 0;
+class smartptr_te {
+    struct deleter_base {
+        virtual void apply(void*) = 0;
         virtual ~deleter_base() {}
     };
     template <typename Deleter>
-    struct deleter : public deleter_base
-    {
-        deleter(Deleter d) : d_(d) {}
-        virtual void apply(void *p) { d_(static_cast<T *>(p)); }
+    struct deleter : public deleter_base {
+        deleter(Deleter d)
+            : d_(d)
+        {
+        }
+        virtual void apply(void* p) { d_(static_cast<T*>(p)); }
         Deleter d_;
     };
 
 public:
     template <typename Deleter>
-    smartptr_te(T *p, Deleter d) : p_(p), d_(new deleter<Deleter>(d)) {}
+    smartptr_te(T* p, Deleter d)
+        : p_(p)
+        , d_(new deleter<Deleter>(d))
+    {
+    }
     ~smartptr_te()
     {
         d_->apply(p_);
         delete d_;
     }
-    T *operator->() { return p_; }
-    const T *operator->() const { return p_; }
+    T* operator->() { return p_; }
+    const T* operator->() const { return p_; }
 
 private:
-    T *p_;
-    deleter_base *d_;
+    T* p_;
+    deleter_base* d_;
 };
 
 template <typename T>
-class smartptr_te_lb
-{
-    struct deleter_base
-    {
-        virtual void apply(void *) = 0;
+class smartptr_te_lb {
+    struct deleter_base {
+        virtual void apply(void*) = 0;
         virtual ~deleter_base() {}
     };
     template <typename Deleter>
-    struct deleter : public deleter_base
-    {
-        deleter(Deleter d) : d_(d) {}
-        virtual void apply(void *p) { d_(static_cast<T *>(p)); }
+    struct deleter : public deleter_base {
+        deleter(Deleter d)
+            : d_(d)
+        {
+        }
+        virtual void apply(void* p) { d_(static_cast<T*>(p)); }
         Deleter d_;
     };
 
 public:
     template <typename Deleter>
-    smartptr_te_lb(T *p, Deleter d) : p_(p),
-                                      d_(sizeof(Deleter) > sizeof(buf_) ? new deleter<Deleter>(d) : new (buf_) deleter<Deleter>(d))
+    smartptr_te_lb(T* p, Deleter d)
+        : p_(p)
+        , d_(sizeof(Deleter) > sizeof(buf_) ? new deleter<Deleter>(d) : new (buf_) deleter<Deleter>(d))
     {
     }
     ~smartptr_te_lb()
     {
         d_->apply(p_);
-        if (static_cast<void *>(d_) == static_cast<void *>(buf_))
-        {
+        if (static_cast<void*>(d_) == static_cast<void*>(buf_)) {
             d_->~deleter_base();
-        }
-        else
-        {
+        } else {
             delete d_;
         }
     }
-    T *operator->() { return p_; }
-    const T *operator->() const { return p_; }
+    T* operator->() { return p_; }
+    const T* operator->() const { return p_; }
 
 private:
-    T *p_;
-    deleter_base *d_;
+    T* p_;
+    deleter_base* d_;
     char buf_[16];
 };
 

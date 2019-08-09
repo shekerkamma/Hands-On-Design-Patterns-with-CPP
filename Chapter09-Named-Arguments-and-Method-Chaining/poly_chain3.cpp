@@ -3,17 +3,16 @@
 using std::cout;
 using std::endl;
 
-// ----------------------------------------------------------------------------- 
+// -----------------------------------------------------------------------------
 template <typename T>
-class Collection
-{
+class Collection {
 public:
     Collection() {}
 
     T filter()
     {
         cout << "Collection::filter" << endl;
-        return *static_cast<T *>(this);
+        return *static_cast<T*>(this);
     }
 
     T sort()
@@ -23,11 +22,10 @@ public:
     }
 };
 
-class SortedCollection : public Collection<SortedCollection>
-{
+class SortedCollection : public Collection<SortedCollection> {
 public:
     SortedCollection() {}
-    SortedCollection(const Collection &) {}
+    SortedCollection(const Collection&) {}
 
     SortedCollection search()
     {
@@ -42,7 +40,7 @@ public:
     }
 };
 
-// ----------------------------------------------------------------------------- 
+// -----------------------------------------------------------------------------
 int main()
 {
     // Collection<SortedCollection> c;

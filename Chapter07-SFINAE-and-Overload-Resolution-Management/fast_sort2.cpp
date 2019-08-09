@@ -1,22 +1,19 @@
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 // ---------------------------------------------------------------------------
-struct have_sort
-{
+struct have_sort {
     char c;
 };
 
 // ---------------------------------------------------------------------------
-struct have_range
-{
+struct have_range {
     char c;
     have_sort c1;
 };
 
 // ---------------------------------------------------------------------------
-struct have_nothing
-{
+struct have_nothing {
     char c;
     have_range c1;
 };
@@ -33,42 +30,39 @@ have_nothing test_sort(...);
 
 // ---------------------------------------------------------------------------
 template <typename T>
-typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_sort)>::type fast_sort(T &x)
+typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_sort)>::type fast_sort(T& x)
 {
     std::cout << "Sorting with T::sort" << std::endl;
     x.sort();
 }
 
 template <typename T>
-typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_range)>::type fast_sort(T &x)
+typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_range)>::type fast_sort(T& x)
 {
     std::cout << "Sorting with std::sort" << std::endl;
     std::sort(x.begin(), x.end());
 }
 
 template <typename T>
-typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_nothing)>::type fast_sort(T &x)
+typename std::enable_if<sizeof(test_sort<T>(NULL, NULL)) == sizeof(have_nothing)>::type fast_sort(T& x)
 {
     std::cout << "No sort available" << std::endl;
 }
 
 // ---------------------------------------------------------------------------
-class A
-{
+class A {
 public:
     void sort() {}
 };
 
-class B
-{
+class B {
 public:
-    int *begin() { return i; }
-    int *end() { return i + 10; }
+    int* begin() { return i; }
+    int* end() { return i + 10; }
     int i[10];
 };
 
-class C
-{
+class C {
 public:
     void f() {}
 };

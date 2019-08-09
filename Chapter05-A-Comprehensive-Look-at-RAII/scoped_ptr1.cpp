@@ -3,29 +3,30 @@
 #include "gtest/gtest.h"
 
 template <typename T>
-class scoped_ptr
-{
+class scoped_ptr {
 public:
-    explicit scoped_ptr(T *p) : p_(p) {}
+    explicit scoped_ptr(T* p)
+        : p_(p)
+    {
+    }
     ~scoped_ptr() { delete p_; }
-    T *operator->() { return p_; }
-    const T *operator->() const { return p_; }
-    T &operator*() { return *p_; }
-    const T &operator*() const { return *p_; }
-    void reset(T *p = nullptr)
+    T* operator->() { return p_; }
+    const T* operator->() const { return p_; }
+    T& operator*() { return *p_; }
+    const T& operator*() const { return *p_; }
+    void reset(T* p = nullptr)
     {
         delete p_;
         p_ = p;
     }
 
 private:
-    T *p_;
-    scoped_ptr(const scoped_ptr &) = delete;
-    scoped_ptr &operator=(const scoped_ptr &) = delete;
+    T* p_;
+    scoped_ptr(const scoped_ptr&) = delete;
+    scoped_ptr& operator=(const scoped_ptr&) = delete;
 };
 
-struct object_counter
-{
+struct object_counter {
     static int count;
     static int all_count;
     object_counter()
@@ -53,8 +54,7 @@ TEST(Scoped_ptr, AcquireRelease)
 TEST(Scoped_ptr, EarlyReturnNoLeak)
 {
     object_counter::all_count = object_counter::count = 0;
-    do
-    {
+    do {
         scoped_ptr p(new object_counter);
         break;
     } while (false);
@@ -65,22 +65,21 @@ TEST(Scoped_ptr, EarlyReturnNoLeak)
 TEST(Scoped_ptr, ThrowNoLeak)
 {
     object_counter::all_count = object_counter::count = 0;
-    try
-    {
+    try {
         scoped_ptr<object_counter> p(new object_counter);
         throw 1;
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
     EXPECT_EQ(0, object_counter::count);
     EXPECT_EQ(1, object_counter::all_count);
 }
 
-class A
-{
+class A {
 public:
-    A(object_counter *p) : p_(p) {}
+    A(object_counter* p)
+        : p_(p)
+    {
+    }
 
 private:
     scoped_ptr<object_counter> p_;
